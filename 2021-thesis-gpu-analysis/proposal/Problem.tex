@@ -1,0 +1,9 @@
+\section{Problem Statement}
+
+The plumbing of video-card architecture has been historically optimized for 3D arithmetic and data flow. This specificity has led to rigid render pipelines and contention for generalized parallel computation. Hence, this ingrained rigidity is why vector graphic types are considered GPU-hostile. The vector graphic specification requires data to be stored implicitly as point and curve data, rather than contiguous rows of color data. This level of indirection prompts a hefty path-finding overhead.\\
+
+With the rise of support for compute kernels and low-level GPU architecture access over the past few years, friction with general-purpose GPU computing has faded. Hardware-accelerated 2D rasterization attempts have been made to exploit the benefits vector-types offer over traditional raster-types. These advancements have made compelling claims. However, there is a noticeable lack of qualitative comparison between techniques and libraries which gauge the modern rendering capability.\\
+
+Analyzing the performance of 2D vector graphics on the GPU is \emph{hard}. Various approaches may be tuned for fonts, mobile power consumption, or other reasons. My research would attempt to unravel the obfuscated connection between 2D vector graphics and the GPU. Primarily focusing on interactivity, but also general-purpose performant 2D vector graphic rendering, an examination is needed to bring context to the body of research. \\
+
+Given the new technologies attempting to solve these issues, it is an appropriate step to respond with a performance GPU analysis. By providing a GPU analysis on 2D GPU vector graphics, we can provide optics and encourage further research.

@@ -1,0 +1,64 @@
+\section{Background and History}
+Vector graphics compete directly with traditional raster graphics that are ubiquitous today. Vector graphics store vertices which are influenced to form complex shapes and paths. This is opposed to raster graphics which store rows of discrete colors.\\
+
+\subsection{Benefits of Vector Graphics}
+Vector graphics promise extraordinary benefits over raster graphics, such as lossless graphic fidelity, storage savings, and malleable paths.\\
+
+\subsubsection{Lossless graphic fidelity}
+Phones, televisions, and desktops have various resolutions and pixel densities, creating the need for resolution-independent graphics. We can solve this problem and show the benefit of lossless graphic fidelity with scaling in Figure \ref{fig:bitmap_vs_svg} below. At any scale or resolution, vector graphics maintain perfect curve precision, which implicates resolution-independence. Although this is not a zero-cost abstraction for rendering, vector graphics are more portable across devices.\\
+
+\svg
+% Path
+{assets/Bitmap_VS_SVG.svg}
+% Caption
+{\label{fig:bitmap_vs_svg}Scaling comparison between vector and raster types}
+% Attribution
+{\href{https://commons.wikimedia.org/w/index.php?curid=1183592}{By Yug, modifications by Cfaerber et al., CC BY-SA 2.5}}
+
+\subsubsection{Storage savings}
+Given that raster images are encoded pixel data, up-scaling uncompressed raster images will grow the file size increasingly. On the contrary, vector graphics have no intrinsic concept of scale, and thus, file size is constant.\\
+
+To prove this, we present a graphic of impossible cubes in Figure \ref{fig:impossible_cubes} below. The graphic file is encoded in SVG format, a common vector format. It is then scaled and translated to a lossless raster equivalency, PNG encoding. We compare its file size natively and after scaling to measure storage savings.\\
+
+\svg
+% Path
+{assets/Impossible_Cubes.svg}
+% Caption
+{\label{fig:impossible_cubes}Impossible cubes}
+% Attribution
+{\href{https://freesvg.org/by/OpenClipart}{OpenClipart, SVG ID: 33931 , Public Domain}}
+
+\clearpage
+
+% Begin table
+\begin{table}
+\centering
+\begin{tabular}{ |p{2cm}||p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{SVG vs PNG file storage} \\
+\hline
+&Original&PNG @ 1x&PNG @3x&PNG @6x\\
+\hline
+Size&9.4K&61K&210K&474k\\
+\hline
+Savings&&84.49\%&95.53\%&98.02\%\\
+\hline
+\end{tabular}
+\caption{\label{tab:impossible_cubes_stats}File savings on impossible cubes}
+\end{table}
+
+The methodology for Table \ref{tab:impossible_cubes_stats} is explained in Appendix \ref{appendix:svg_vs_png}. The results are adjudicating. Vector types possess a distinguished encoding supremacy both natively and with up-scaling. This is particularly useful when file size has empirical consequences, such as latency incurred over network loading (e.g. web pages). It is also worth briefly mentioning SVG is an XML format, which characteristically has (tons of) repeated data. Compression algorithms, such as \textit{svgz}, can make these results \emph{better}.\\
+
+\subsubsection{Malleable paths}
+The most powerful primitive in vectors is the quadratic Bézier curve, which has four parametric vertex constraints. This "universal curve" can also subdivide infinitely and is capable of abstract geometric transformations. These curves are the crux of vector graphics, because all complex shapes can be represented by piecewise Bézier curves.\\
+
+\svg
+% Path
+{assets/Bezier_Curve.svg}
+% Caption
+{A quadratic Bézier curve}
+% Attribution
+{\href{https://commons.wikimedia.org/wiki/File:Bezier_curve.svg}{Wikimedia Commons, Public domain}}
+\label{fig:bezier_curve}
+
+Moreover, the pliability of Bézier curves leads to interesting implications for physics and animation. Since vectors are independent of scale, we benefit from infinitesimally-precise data, useful for scientific visualization and modeling.\\
