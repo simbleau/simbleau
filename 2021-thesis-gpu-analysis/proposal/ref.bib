@@ -1,11 +1,128 @@
-
-@Misc{Silva2018a,
-  author        = {Silva, Nicolas},
-  title         = {Lyon},
-  howpublished  = {\url{https://github.com/nical/lyon}},
-  year          = {2018},
-  __markedentry = {[simbleau:6]},
-  commit        = {044b380955c5a075ac525c7b92d0884f0379ac7a},
-  journal       = {GitHub repository},
-  publisher     = {GitHub},
+@PROCEEDINGS{Silva18,
+author = {Nicolas Silva},
+title = {Vector graphics rendering on the GPU in Rust with Lyon},
+url = {https://www.youtube.com/watch?v=2Ng5kpDirDI},
+organization = {RustFest 2018},
+place={Paris}, 
+year={2018}, 
+month={May}
 }
+
+
+@article {Li16,
+title = {Efficient GPU Path Rendering Using Scanline Rasterization},
+author = {Rui Li and Qiming Hou and Kun Zhou},
+journal = {ACM Transactions on Graphics},
+volume = {35},
+number = {6},
+pages = {},
+year = {2016}
+}
+
+@article{Nehab08,
+author = {Nehab, Diego and Hoppe, Hugues},
+title = {Random-Access Rendering of General Vector Graphics},
+year = {2008},
+issue_date = {December 2008},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {27},
+number = {5},
+issn = {0730-0301},
+url = {https://doi.org/10.1145/1409060.1409088},
+doi = {10.1145/1409060.1409088},
+abstract = {We introduce a novel representation for random-access rendering of antialiased vector graphics on the GPU, along with efficient encoding and rendering algorithms. The representation supports a broad class of vector primitives, including multiple layers of semitransparent filled and stroked shapes, with quadratic outlines and color gradients. Our approach is to create a coarse lattice in which each cell contains a variable-length encoding of the graphics primitives it overlaps. These cell-specialized encodings are interpreted at runtime within a pixel shader. Advantages include localized memory access and the ability to map vector graphics onto arbitrary surfaces, or under arbitrary deformations. Most importantly, we perform both prefiltering and supersampling within a single pixel shader invocation, achieving inter-primitive antialiasing at no added memory bandwidth cost. We present an efficient encoding algorithm, and demonstrate high-quality real-time rendering of complex, real-world examples.},
+journal = {ACM Trans. Graph.},
+month = dec,
+articleno = {135},
+numpages = {10}
+}
+
+@misc{Lyon,
+  author = {Silva, Nicolas},
+  title = {Lyon},
+  year = {2018},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/nical/lyon}},
+  commit = {044b380955c5a075ac525c7b92d0884f0379ac7a}
+}
+
+ @misc{D2D_Tess, title={Geometry Realizations Overview}, url={https://docs.microsoft.com/en-us/windows/win32/direct2d/geometry-realizations-overview#why-use-geometry-realizations}, journal={Win32 apps | Microsoft Docs}, author={Microsoft},publisher={Microsoft}, year={2018}, month={May}} 
+ 
+     @article{Loop05,
+    author = {Loop, Charles and Blinn, Jim},
+    title = {Resolution Independent Curve Rendering Using Programmable Graphics Hardware},
+    year = {2005},
+    issue_date = {July 2005},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    volume = {24},
+    number = {3},
+    issn = {0730-0301},
+    url = {https://doi.org/10.1145/1073204.1073303},
+    doi = {10.1145/1073204.1073303},
+    abstract = {We present a method for resolution independent rendering of paths and bounded regions, defined by quadratic and cubic spline curves, that leverages the parallelism of programmable graphics hardware to achieve high performance. A simple implicit equation for a parametric curve is found in a space that can be thought of as an analog to texture space. The image of a curve's B\'{e}zier control points are found in this space and assigned to the control points as texture coordinates. When the triangle(s) corresponding to the B\'{e}zier curve control hull are rendered, a pixel shader program evaluates the implicit equation for a pixel's interpolated texture coordinates to determine an inside/outside test for the curve. We extend our technique to handle anti-aliasing of boundaries. We also construct a vector image from mosaics of triangulated B\'{e}zier control points and show how to deform such images to create resolution independent texture on three dimensional objects.},
+    journal = {ACM Trans. Graph.},
+    month = jul,
+    pages = {1000–1009},
+    numpages = {10},
+    keywords = {graphics hardware algorithms, curve rendering, resolution independence, vector representations}
+    }
+
+      
+
+@article{Ganacim14,
+  title = {Massively-Parallel Vector Graphics},
+  author = {Ganacim, F. and Lima, R. S. and de Figueiredo, L. H. and Nehab, D.},
+  journal = {ACM Transactions on Graphics (Proceedings of the ACM SIGGRAPH Asia 2014)},
+  year = {2014},
+  volume = {33},
+  number = {6},
+  pages = {229},
+  doi = {10.1145/2661229.2661274},
+}
+
+ @misc{Levien20, title={A sort-middle architecture for 2D graphics}, url={https://raphlinus.github.io/rust/graphics/gpu/2020/06/12/sort-middle.html}, journal={Raph Levien's blog}, author={Levien, Raph Linus}, year={2020}, month={Jun}} 
+ 
+  @misc{WebGPU, title={WebGPU}, url={https://www.w3.org/TR/webgpu/}, journal={WebGPU W3C Working Draft}, author={W3C®}, year={2021}, month={Jun}} 
+  
+  @inproceedings{Laine11,
+author = {Laine, Samuli and Karras, Tero},
+title = {High-Performance Software Rasterization on GPUs},
+year = {2011},
+isbn = {9781450308960},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2018323.2018337},
+doi = {10.1145/2018323.2018337},
+abstract = {In this paper, we implement an efficient, completely software-based graphics pipeline on a GPU. Unlike previous approaches, we obey ordering constraints imposed by current graphics APIs, guarantee hole-free rasterization, and support multisample antialiasing. Our goal is to examine the performance implications of not exploiting the fixed-function graphics pipeline, and to discern which additional hardware support would benefit software-based graphics the most.We present significant improvements over previous work in terms of scalability, performance, and capabilities. Our pipeline is malleable and easy to extend, and we demonstrate that in a wide variety of test cases its performance is within a factor of 2--8x compared to the hardware graphics pipeline on a top of the line GPU.Our implementation is open sourced and available at http://code.google.com/p/cudaraster/},
+booktitle = {Proceedings of the ACM SIGGRAPH Symposium on High Performance Graphics},
+pages = {79–88},
+numpages = {10},
+location = {Vancouver, British Columbia, Canada},
+series = {HPG '11}
+}
+
+@article{Kilgard12,
+author = {Kilgard, Mark J. and Bolz, Jeff},
+title = {GPU-Accelerated Path Rendering},
+year = {2012},
+issue_date = {November 2012},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {31},
+number = {6},
+issn = {0730-0301},
+url = {https://doi.org/10.1145/2366145.2366191},
+doi = {10.1145/2366145.2366191},
+abstract = {For thirty years, resolution-independent 2D standards (e.g. PostScript, SVG) have depended on CPU-based algorithms for the filling and stroking of paths. Advances in graphics hardware have largely ignored accelerating resolution-independent 2D graphics rendered from paths.We introduce a two-step "Stencil, then Cover" (StC) programming interface. Our GPU-based approach builds upon existing techniques for curve rendering using the stencil buffer, but we explicitly decouple in our programming interface the stencil step to determine a path's filled or stroked coverage from the subsequent cover step to rasterize conservative geometry intended to test and reset the coverage determinations of the first step while shading color samples within the path. Our goals are completeness, correctness, quality, and performance---yet we go further to unify path rendering with OpenGL's established 3D and shading pipeline. We have built and productized our approach to accelerate path rendering as an OpenGL extension.},
+journal = {ACM Trans. Graph.},
+month = nov,
+articleno = {172},
+numpages = {10},
+keywords = {stencil buffer, path rendering, OpenGL, vector graphics}
+}
+
+  
+

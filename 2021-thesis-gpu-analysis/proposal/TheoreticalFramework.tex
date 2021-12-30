@@ -1,30 +1,30 @@
-\section{Theoretical Framework}
+\section{Theoretical framework}
 
-When performing a GPU analysis for 2D graphics, one must be narrow in scope because 2D graphics have more cultural application than 3D. Computer graphics in 3D typically (perhaps over-generalizing) optimize for a level of graphic-richness without sacrificing an adequate frame-rate. On the contrary, we have varying motivations for the optimization of 2D graphics. We may optimize for latency, power consumption (mobile), contention of scarce resources (CPU $\Leftrightarrow$ GPU bandwidth), or consider balancing several of these factors.\\
+When performing a GPU performance analysis for 2D graphics, one must be narrow in scope because 2D graphics have more cultural application than 3D. Computer graphics in 3D typically optimize for a level of graphic-richness without sacrificing an adequate frame-rate. On the contrary, we have varying motivations for the optimization of 2D graphics. We may optimize for latency, power consumption (mobile), contention of scarce resources (CPU $\Leftrightarrow$ GPU bandwidth), or consider balancing several of these factors.\\
 
 A 2D hardware-accelerated performance analysis is a stark contrast to traditional single-threaded benching, typically done using elapsed time or discrete measurements such as \emph{fps}. In such cases, those metrics are usually enough, and \emph{Big-O} is a decent proxy. However, GPU analysis is more contextual, requiring more trials, instrumentation, and hardware to yield precise residual data.
 
-\subsection{Goals of our renderers}
+\subsection{Analytic goals}
 Because of eclectic 2D optimization goals, the scope of research should narrow down and hammer-in some concrete parameters. Our scope aims to analyze interactivity with dynamism for 2D GPU vector graphics. Contributions should be insightful for individuals benefiting from interactivity, visual complexity, and animation. Examples of this may include interactive simulations, scientific visualization, and games. Mileage may vary.\\
 
-The goals of a renderer which coincide our scope are presented, namely, and in no particular order:
+The goals of rendering optimization which coincide our scope are presented, namely, and in no particular order:
 \begin{itemize}
   \item Minimizing CPU load
   \item Tolerable GPU submit latency
   \item Scene complexity and scalability
-  \item Dynamism and animation
+  \item Dynamism
 \end{itemize}
 
 \subsection{Theory}
 
-The goals of our scope synthesize a theory about vector graphics. Namely, is the 2D imaging model nearing uselessness, or can we prove, with testable predictions, that 2D imaging can extend its usefulness with interactivity?
+The goals of our scope synthesize a theory about vector graphics. Namely, is the 2D imaging model nearing uselessness, or can we prove, with testable predictions, that 2D imaging can extend its usefulness?
 
 \subsection{Hypotheses for analysis}
 
 As follows, several hypotheses are declared to test our theory.
 \begin{itemize}
   \item Where do current vector graphics libraries maximize graphic richness without sacrificing frame-rate across a range of hardware, dynamism, and scene complexity?
-  \item To what effect is the GPU architecture leveraged in each library?
+  \item To what effect is the GPU architecture leveraged currently?
   \item What are the consequences of tessellation?
   \item What are the benefits of pre-computation model?
   \item Can compute-centric approaches improve performance?
@@ -33,70 +33,65 @@ As follows, several hypotheses are declared to test our theory.
 
 \subsection{Analysis methodology}
 
-We will be benching to answer the questions presented above. The methodology is divided into sections to discuss the set of renderers for benching and instrumentation.
+We will be creating a benching framework to answer the goals presented by our hypotheses for analysis. The methodology is divided into sections to discuss the benchmarks and instrumentation.
 
-\subsubsection{Rendering}
+\subsubsection{Benchmarks}
 
-The chosen rendering accessories for analysis are as follows.\\
+Specifically designed to target our hypotheses are data collection render-centric tests known as benchmarks. These benchmarks include:
 
-\textbf{Tessellators}
 \begin{itemize}
-  \item \href{https://github.com/nical/lyon}{Lyon}
-\end{itemize}
-
-\textbf{Renderers}
-\begin{itemize}
-  \item \href{https://skia.googlesource.com/skia}{Skia}
-  \item \href{https://github.com/servo/pathfinder}{Pathfinder}
-  \item \href{https://github.com/linebender/piet-gpu}{piet-gpu}
-  \item \href{https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/src/graphics/lib/compute/spinel/README.md}{Spinel}
+  \item Frame-times of vector images, by renderer
+  \item Frame-times of tessellated vector images
+  \item Complexity of vector images (primitive count)
+  \item Complexity of tessellated vector images (triangle count)
+  \item Tessellation-time of vector images
+  \item Tessellation-time of vector primitives (curves, triangles)
+  \item Scalability of vector primitives (curves, triangles)
+  \item Hardware utilization of vector images, by renderer
+  \item Hardware utilization of tessellated vector images
 \end{itemize}
 
 \subsubsection{Instrumentation}
 
-Lyon will be instrumented with a performant native renderer for benching, namely wgpu-rs. wgpu-rs is an implementation of \href{https://www.w3.org/community/gpu/}{WebGPU}, written in Rust, which is compatible with Lyon. It is capable of transpilation targeting both WebAssembly (WASM) and native applications. It is developed by the W3C GPU for the Web Community Group with engineers from Apple, Mozilla, Microsoft, Google, and others\cite{WebGPU}. Lyon will have particularly insightful results on the tessellation model and whether it can be tweaked for better results (more on this in \ref{sec:lazy_tess}).\\
+To collect tessellation metrics, \href{https://github.com/nical/lyon}{Lyon} will be used as the backend tessellation library, given its proven academic and modern application.\\
 
-For GPU and CPU profiling, I have chosen \href{https://developer.nvidia.com/nsight-systems}{NVIDIA® Nsight Systems}. It is a feature-rich CLI/GUI application which can identify GPU starvation, unnecessary GPU synchronization, insufficient CPU parallelizing, and expensive algorithms across the CPUs and GPUs. It is perfect for time benchmarking and is extensible through the \href{https://docs.nvidia.com/gameworks/content/gameworkslibrary/nvtx/nvidia_tools_extension_library_nvtx.htm}{NVIDIA® Tools Extension SDK (NVTX)}. NVTX is a C-based API for annotating events, code ranges, and resources in applications.\\
+To render the tessellated vector models, a from-scratch minimal renderer for triangles will be created using \href{https://wgpu.rs/}{wgpu-rs}, an implementation of the \href{https://www.w3.org/community/gpu/}{WebGPU} specification, at the request of very little GPU features. This naive renderer is contrived to record the minimum time necessary for rendering a tessellated model. wgpu-rs is capable of transpilation, targeting both WebAssembly (WASM) and native applications. It is developed by the W3C GPU for the Web Community Group with engineers from Apple, Mozilla, Microsoft, Google, and others\cite{WebGPU}.\\
 
-Fruitful effort has already been completed for profiling. All presented rendering libraries are in C/C++ or Rust. Hence, NVTX needs to be dually available in Rust. Thankfully, Rust's foreign function interface(FFI) provides a zero-cost abstraction, wherein, communicating through the application binary interface(ABI) between Rust and C have identical performance. Pursuing this, I (Spencer C. Imbleau) created a binding to NVTX in Rust, and have uploaded the source on \href{https://github.com/simbleau/nvtx-rs}{https://github.com/simbleau/nvtx-rs}. Thus, all renderers, including wgpu-rs, will be instrumented by the NVIDIA Tools Extension SDK for precise benchmarking \emph{without compromise}.
+For GPU and CPU profiling, I have chosen \href{https://developer.nvidia.com/nsight-systems}{NVIDIA® Nsight Systems}. It is a feature-rich CLI/GUI application which can identify hardware starvation, insufficient parallelizing, and expensive algorithms across hardware. It is perfect for profiling the CPU and GPU and is extensible through the \href{https://docs.nvidia.com/gameworks/content/gameworkslibrary/nvtx/nvidia_tools_extension_library_nvtx.htm}{NVIDIA® Tools Extension SDK (NVTX)}. NVTX is a C-based API for annotating events, code ranges, and resources in applications.\\
 
-\subsubsection{Benchmarking}
+For a test set of vector graphics, I will identify practical examples with varying complexity and a set of primitives at varying scales and amounts. These will be generated dynamically for comprehensive coverage of renderer features, unbiased to the strengths of any renderer.
 
-First, it is important to establish a test set. \href{https://github.com/RazrFalcon/resvg}{\emph{resvg}} offers an exhaustive test-suite used to measure SVG compliance under the \href{https://www.mozilla.org/en-US/MPL/}{Mozilla Public License 2.0}, which is convenient and available for our benching. Ideally, we would use a subset of primitives suited for chronometric benchmarking. Using this test-pool, we can begin to answer our hypotheses.\\
+\subsubsection{Hypotheses}
 
+Below I will answer the approaches tailored to answer my hypotheses for analysis.\\ 
+\\
 \textbf{Where do current vector graphics libraries maximize graphic richness without sacrificing frame-rate across a range of hardware, dynamism, and scene complexity?}\\
 \begin{adjustwidth}{2cm}{}
-This is a multi-faceted question.\\
+We can assume access to a wide range of desktop-class GPUs. Appalachian State University has access to server(s) fitted with an NVIDIA® GPUs and offers funding for this case.\\
 
-Firstly, We can assume access to a wide range of desktop-class GPUs. Appalachian State University has access to a server fitted with an NVIDIA® GeForce GTX 1080 and offers funding for this case.\\
-
-Next, to test dynamism and scene complexity for each library, we will measure elapsed frame-time. Frame-time is the amount of time a frame buffer is visible to the user before being replaced. A universally accepted standard is around $\approx16ms$, which translates inversely to $60fps$ (\textit{frames-per-second}).\\
-
-This can be visualized and analyzed by three-dimensional graphing, where dynamism($x$) and complexity($y$) are plotted with respect to average elapsed frame-time($z$).\\
+To test dynamism and scene complexity for each library, we will measure elapsed frame-time. Frame-time is the amount of time a frame buffer is visible to the user before being replaced. A universally accepted target is around $\approx16ms$, which translates inversely to $60fps$ (\textit{frames-per-second}).\\
 \end{adjustwidth}
 
 \textbf{To what effect is the GPU architecture leveraged in each library?}\\
 \begin{adjustwidth}{2cm}{}
-This can be analyzed by interpreting metrics such as active GPU-thread count, parallelism, and core-utilization under stress. Specifically, we would like to measure GPU starvation, GPU synchronization, and insufficient parallelization. \\
+This can be analyzed by interpreting metrics such as active GPU throughput measured under stress. Specifically, we would like to measure GPU utilization and starvation (insufficient parallelization). \\
 \end{adjustwidth}
 
 \textbf{What are the consequences of tessellation?}\label{sec:lazy_tess}\\
 \begin{adjustwidth}{2cm}{}
-Tessellation has the opportunity to benefit from the traditional raster pipeline by transmuting vector data into discrete triangles. We can measure the consequences of tessellation by comparing the pre-computed triangle rendering to the fastest non-tessellation-based renderers.\\
-
-It is speculative, but depending on the speed of tessellation, it is likely that animation and non-static content will be unfeasible (too slow) for interactive dynamism. Attempting a hacky solution hereby referred to now as "lazy-tessellation", or \emph{tessellating-by-need}, may enhance the model, although this conjecture requires justification.\\
+Tessellation has the opportunity to benefit from the traditional raster pipeline by transmuting vector data into discrete triangles. We can measure the consequences of tessellation by comparing the pre-computed triangle rendering to the fastest non-tessellation-based rendering.\\
 \end{adjustwidth}
 
 \textbf{What are the benefits of a pre-computation model?}\\
 \begin{adjustwidth}{2cm}{}
-Inherently, pre-computation is the enemy of dynamism. This philosophical question attempts to measure the impact of pre-computation models with respect to interactivity. This can be examined by measuring the precarious division where a pre-computation model maximizes the data model before compromising interactivity. To a degree, this means maximizing GPU efficiency while keeping of keeping GPU submit latency consistently low ($\approx16ms$).\\
+Inherently, pre-computation is the enemy of dynamism. This hypothesis attempts to measure the impact of pre-computation model interactivity. This may be measured by calculating the discrete function of frame-rate before compromising interactivity.\\
 
 Particularly worthy of analysis are fonts. Font sets are typically sized once, baked, and cached in a friendly way. This performance optimization benefits predictably from temporal locality. Examples include applications with heavy glyph recycling, such as text document editors.\\
 \end{adjustwidth}
 
 \textbf{Can compute-centric approaches improve performance?}\\
 \begin{adjustwidth}{2cm}{}
-The impact of a compute-centric approach can be inductively reasoned by comparing Pathfinder 3 and piet-gpu. Both libraries share many similarities, except Pathfinder 3 uses a (mostly) rasterization pipeline, whereas piet-gpu uses a compute-centric pipeline. Isolating the differences between the technologies can be documented in further depth with accompanying performance comparisons.\\
+The impact of a compute-centric approach can be inductively reasoned by comparing features in rendering libraries such as \textit{piet-gpu}. To a degree, this means measuring the maximization of GPU efficiency while keeping of keeping GPU submit latency consistently low ($\approx16ms$) with the leveraging of compute shaders.\\
 \end{adjustwidth}
 
 \textbf{Can low-level GPU features (subgroups, bindings) improve the imaging model?}\\
