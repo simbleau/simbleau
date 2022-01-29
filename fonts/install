@@ -1,0 +1,14 @@
+#!/bin/bash
+
+echo "This script will install all fonts."
+read -p "Begin? (Y/n) > " choice
+
+if [[ "$choice" =~ ^[yY]?$ ]]; then
+	echo -n "Adding Fira Code..."
+	sudo apt install -y fonts-firacode
+	echo "Complete."
+	exit 0
+else
+	echo "Program aborted."
+	exit 0
+fi
