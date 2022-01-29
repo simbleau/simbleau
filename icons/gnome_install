@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo "This script will install the Papirus icon pack."
+read -p "Begin? (Y/n) > " choice
+
+if [[ "$choice" =~ ^[yY]?$ ]]; then
+	echo -n "Adding repository..."
+	sudo add-apt-repository ppa:papirus/papirus -y
+	sudo apt install -y papirus-icon-theme
+	echo "Complete."
+	echo -n "Installing..."
+	gsettings set org.gnome.desktop.interface icon-theme Papirus 
+	echo "Complete."
+	exit 0
+else
+	echo "Program aborted."
+	exit 0
+fi
