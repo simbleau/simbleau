@@ -21,8 +21,8 @@ if [[ "$choice" =~ ^[yY]?$ ]]; then
 	ssh-keygen -t ed25519 -C "$useremail" -f "$output_dir/github_id_rsa" -q
 	echo "Complete."
 	echo -n "Updating git configuration..."
-	git config --global user.email "you@example.com"
-	git config --global user.name "Your Name"
+	git config --global user.email "$useremail"
+	git config --global user.name "$userfname $userlname"
 	echo "Complete."
 	echo -n "Linking keys..."
 	ln -sf "$output_dir/github_id_rsa" "$link_dir/github_id_rsa"
