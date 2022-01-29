@@ -1,0 +1,19 @@
+#!/bin/bash
+echo "This script will REPLACE YOUR BASH FILES. THIS IS YOUR WARNING."
+
+# Gather information
+this_dir=$(dirname "$0")
+source_dir=$(realpath $this_dir)
+link_dir=$(realpath ~/)
+
+read -p "Begin? (Y/n) > " choice
+if [[ "$choice" =~ ^[yY]?$ ]]; then
+	echo -n "Replacing bashrc..."
+	rm "$link_dir/.bashrc"
+	ln -sf "$source_dir/bashrc" "$link_dir/.bashrc"
+	echo "Complete."
+	exit 0
+else
+	echo "Program aborted."
+	exit 0
+fi
