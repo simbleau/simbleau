@@ -2,7 +2,3 @@
 
 # Attempts to ssh to GitHub
 ssh -T git@github.com
-
-if [ $? -eq 0 ]; then
-	echo "SSH failed. Did you add your public key? (https://github.com/settings/keys)"
-fi
