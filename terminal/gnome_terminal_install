@@ -1,0 +1,17 @@
+#!/bin/bash
+echo "This script will load gnome terminal settings."
+
+# Gather information
+this_dir=$(dirname "$0")
+source_dir=$(realpath $this_dir)
+
+read -p "Begin? (Y/n) > " choice
+if [[ "$choice" =~ ^[yY]?$ ]]; then
+	echo -n "Loading dconf..."
+	dconf load /org/gnome/terminal/legacy/profiles:/ < $source_dir/gnome-terminal-profiles.dconf
+	echo "Complete."
+	exit 0
+else
+	echo "Program aborted."
+	exit 0
+fi

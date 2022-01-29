@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# This script will take the users' gnome terminal profiles
+# and export it to gnome-terminal-profles.dconf
+
+this_dir=$(dirname "$0") 
+source_dir=$(realpath $this_dir) 
+
+original=$(md5sum $source_dir/gnome-terminal-profiles.dconf)
+dconf dump /org/gnome/terminal/legacy/profiles:/ > gnome-terminal-profiles.dconf
+new=$(md5sum $source_dir/gnome-terminal-profiles.dconf)
+
+if [[ "$new" == "$original" ]]; then
+	echo "No change detected."
+else
+	echo "Updated gnome-terminal-profiles.dconf"
+fi
