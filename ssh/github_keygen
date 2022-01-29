@@ -1,0 +1,44 @@
+#!/bin/bash
+echo "This script will make it easy to generate an SSH key for GitHub and link it to your .ssh directory."
+echo
+
+# Gather information
+this_dir=$(dirname "$0")
+output_dir=$(realpath $this_dir)
+link_dir=$(realpath ~/.ssh)
+read -p 'Email: > ' useremail
+read -p 'First name: > ' userfname
+read -p 'Last name: > ' userlname
+
+echo
+echo "Your git signature will be: '$userfname $userlname <$useremail>'."
+echo "The keys will be written to: $output_dir"
+echo "The keys will be soft-linked to: $link_dir"
+read -p "Is this correct? (Y/n) > " choice
+
+if [[ "$choice" =~ ^[yY]?$ ]]; then
+	echo -n "Generating key..."
+	ssh-keygen -t ed25519 -C "$useremail" -f "$output_dir/github_id_rsa" -q
+	echo "Complete."
+	echo -n "Updating git configuration..."
+	git config --global user.email "you@example.com"
+	git config --global user.name "Your Name"
+	echo "Complete."
+	echo -n "Linking keys..."
+	ln -sf "$output_dir/github_id_rsa" "$link_dir/github_id_rsa"
+	ln -sf "$output_dir/github_id_rsa.pub" "$link_dir/github_id_rsa.pub"
+	echo "Complete."
+	echo
+	if [ -x "$(command -v xclip)" ]; then
+		echo "Public key (copied to your clipboard):"
+		xclip "$output_dir/github_id_rsa.pub"
+	else
+		echo "Public key:"
+	fi
+	cat "$output_dir/github_id_rsa.pub"
+
+	exit 0
+else
+	echo "Program aborted."
+	exit 0
+fi
