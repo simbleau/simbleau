@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "This script will make it easy to generate an SSH key for GitHub and link it to your .ssh directory."
+echo "This script will make it easy to generate an SSH key for GitHub and handle local configuration."
 echo
 
 # Gather information
