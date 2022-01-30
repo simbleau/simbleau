@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Gather information
+output_dir=$(realpath ~/.themes)
+
+this_dir=$(dirname "$0")
+theme_name="Nordic-darker"
+theme_zip="$theme_name.tar.xz"
+theme_path=$(realpath $this_dir/$theme_zip)
+
+echo "This script will install the Nordic theme ($theme_zip) to $output_dir."
+read -p "Begin? (Y/n) > " choice
+
+if [[ "$choice" =~ ^[yY]?$ ]]; then
+	echo -n "Making directory..."
+	if [ ! -d $output_dir ]; then
+		mkdir $output_dir
+	fi
+	echo "Complete."
+	echo -n "Unpacking..."
+	tar -xf "$theme_path" -C "$output_dir"
+	echo "Complete."
+	echo -n "Installing..."
+	gsettings set org.gnome.desktop.interface gtk-theme $theme_name
+	gsettings set org.gnome.desktop.wm.preferences theme $theme_name
+	echo "Complete."
+	exit 0
+else
+	echo "Program aborted."
+	exit 0
+fi
