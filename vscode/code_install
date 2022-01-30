@@ -1,0 +1,25 @@
+#!/bin/bash
+echo "This script will load VS Code extensions and settings."
+
+# Gather information
+this_dir=$(dirname "$0")
+source_dir=$(realpath $this_dir)
+
+read -p "Begin? (Y/n) > " choice
+if [[ "$choice" =~ ^[yY]?$ ]]; then
+	echo -n "Installing VS Code..."
+	snap install --classic code
+	echo "Complete."
+	echo -n "Installing Settings-Sync..."
+	code --install-extension shan.code-settings-sync
+	echo "Complete."
+	echo -n "Installing settings.json..."
+	rm ~/.config/Code/User/settings.json
+	cp initial_settings.json ~/.config/Code/User/settings.json
+	echo "Complete."
+	echo
+	exit 0
+else
+	echo "Program aborted."
+	exit 0
+fi
