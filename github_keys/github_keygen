@@ -17,19 +17,19 @@ echo "The keys will be soft-linked to: $link_dir"
 read -p "Is this correct? (Y/n) > " choice
 
 if [[ "$choice" =~ ^[yY]?$ ]]; then
-	echo -n "Generating key..."
-	ssh-keygen -t ed25519 -C "$useremail" -f "$output_dir/github_id_rsa" -q
-	echo "Complete."
 	echo -n "Updating git configuration..."
 	git config --global user.email "$useremail"
 	git config --global user.name "$userfname $userlname"
+	echo "Complete."
+	echo -n "Generating key..."
+	ssh-keygen -t ed25519 -C "$useremail" -f "$output_dir/github_id_rsa" -q
 	echo "Complete."
 	echo -n "Linking keys..."
 	ln -sf "$output_dir/github_id_rsa" "$link_dir/github_id_rsa"
 	ln -sf "$output_dir/github_id_rsa.pub" "$link_dir/github_id_rsa.pub"
 	echo "Complete."
-	echo -n "Adding key to agent..."
-	eval "$(ssh-agent -s)" > /dev/null
+	echo "Adding key to agent..."
+	eval "$(ssh-agent -s)"
 	ssh-add "$link_dir/github_id_rsa"
 	echo "Complete."
 	echo
