@@ -25,12 +25,12 @@ if [[ "$choice" =~ ^[yY]?$ ]]; then
 	ssh-keygen -t ed25519 -C "$useremail" -f "$output_dir/github_id_rsa" -q
 	echo "Complete."
 	echo -n "Linking keys..."
-	ln -sf "$output_dir/github_id_rsa" "$link_dir/github_id_rsa"
-	ln -sf "$output_dir/github_id_rsa.pub" "$link_dir/github_id_rsa.pub"
+	ln -f "$output_dir/github_id_rsa" "$link_dir/github_id_rsa"
+	ln -f "$output_dir/github_id_rsa.pub" "$link_dir/github_id_rsa.pub"
 	echo "Complete."
 	echo "Adding key to agent..."
 	eval "$(ssh-agent -s)"
-	ssh-add "$link_dir/github_id_rsa"
+	ssh-add $link_dir/github_id_rsa
 	echo "Complete."
 	echo
 	if [ -x "$(command -v xclip)" ]; then
