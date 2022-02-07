@@ -28,6 +28,10 @@ if [[ "$choice" =~ ^[yY]?$ ]]; then
 	ln -sf "$output_dir/github_id_rsa" "$link_dir/github_id_rsa"
 	ln -sf "$output_dir/github_id_rsa.pub" "$link_dir/github_id_rsa.pub"
 	echo "Complete."
+	echo -n "Adding key to agent..."
+	eval "$(ssh-agent -s)" > /dev/null
+	ssh-add "$link_dir/github_id_rsa"
+	echo "Complete."
 	echo
 	if [ -x "$(command -v xclip)" ]; then
 		echo "Public key (copied to your clipboard):"
