@@ -92,6 +92,13 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 alias rm='rm -i'
+alias dap='da -p'
+alias dapi='da -p -i'
+alias dai='da -i'
+alias enp='en -p'
+alias enpi='en -p -i'
+alias enpi='en -i'
+
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -117,3 +124,4 @@ if ! shopt -oq posix; then
   fi
 fi
 . "$HOME/.cargo/env"
+
