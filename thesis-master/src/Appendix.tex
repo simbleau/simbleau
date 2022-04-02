@@ -1,0 +1,37 @@
+\appendix
+\addcontentsline{toc}{section}{Appendix}\label{sec:appendix}
+
+\section{Methodology for \cref{tab:impossible_cubes_stats}}
+\label{appendix:svg_vs_png}
+This explains the methodology for \cref{tab:impossible_cubes_stats}.
+All files used to replicate results can be found at \thesisrepo. We used linux system binaries and \textit{inkscape} for SVG $\rightarrow$ PNG file exporting.\medskip
+
+First we parsed the file ``\textit{assets/Impossible\_Cubes.svg}'' for viewport information to obtain the canonical size the \textit{svg} was saved in. The metadata in the image indicates the dimensions are roughly 375x429.
+\medskip
+
+\begin{verbatim}viewBox="0 0 374.95 429.34"\end{verbatim}
+\medskip
+
+Thus, to export at $1x$ scale, we used the following \textit{inkscape} command:
+
+\begin{verbatim}inkscape -w 375 -h 429 Impossible_Cubes.svg -e Impossible_Cubes.png\end{verbatim}
+\medskip
+
+Upscaled dimensions are modified through the \code{-w} and \code{-h} options. File savings were measured in bytes with the formula $f(x,y)=100(1-\frac{x}{y})$, where $f(x,y)$ is the percentage of storage savings, $x$ is the amount of original file bytes, and $y$ is the new amount of file bytes.
+
+\section{Methodology for \cref{fig:ghostscript_overdraw}}
+\label{appendix:overdraw}
+There are many ways to simulate an image without occlusion culling. The first option is to use the blending hardware; when rendering geometry with any GPU API, specify the "add" blending operator and render ``1'' into the target. The target will result in a map containing the number of writes per pixel. Afterward, one can then take that as input of another shader that translates that number into a color that is easy to see.\medskip
+
+That being said, we took a rudimentary approach, as detail was not imperative. We took an \textit{svg}, ``GhostScript\_Tiger.svg'', and ungrouped all paths in \textit{Inkscape}. We then selected all paths and modified the opacity to \(0.2\) and the fill color to white. This process is shown in \cref{fig:overdraw_appendix}.\medskip
+
+\widesvg
+% Path
+{assets/Overdraw_Appendix.svg}
+% Caption
+{Changing fill and opacity for paths in \textit{Inkscape}.\label{fig:overdraw_appendix}}
+% Attribution
+{By Spencer C. Imbleau, MIT/Apache 2.0}
+
+
+

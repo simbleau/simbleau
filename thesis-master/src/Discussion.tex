@@ -1,0 +1,16 @@
+\section{Discussion}\label{sec:discussion}
+Our discussion connects interesting findings and discourse on our test case results and interprets our analytic framework's performance in a test trial.
+
+\subsection{Test Case Discussion}
+In the context of our test case, we analyzed several axes of measurement for static \textit{svg} content. We extrapolated many patterns and consequences for our analysis questions through many data artifacts and plots provided by \toollinkedname. These artifacts proved how dated tessellation is in a modern context for static content. Additionally, results support compute-centric approaches may provide better results.\medskip
+
+When tessellation input was a simple \textit{svg} file, obstacles such as tessellation costs, initialization costs, and GPU latency crushed any potential of a fast initial frame. As a pre-computation model, tessellation also suffers from obstruction by other means, such as hostility towards deformations and rescaling. Benefits of hardware acceleration benefitting tessellation were only noticed with \textit{Render-Kit}'s GPU cache on subsequent frames, even outperforming an extremely optimized renderer like \textit{resvg}. However, these benefits came at the cost of higher computer resources. Moreover, the results of GPU leveraging in \textit{Render-Kit} paled comparatively to \textit{Pathfinder}'s sophisticated compute-centric rendering in every benchmark.\medskip
+
+The test case implies that a compute-centric approach provides faster initial frame-time and subsequent frame times with evidence. Compute-centricity in \textit{Pathfinder} was capable of higher parallelization and utilizing fewer CPU resources, mitigating the impact on business logic and system performance. While faster initial frame times were observed with CPU rendering by \textit{resvg} in the most simple examples, this observed benefit only exists until render time exceeds GPU latency.\medskip
+
+Specifically, hardware acceleration shows incredible benefits for rendering vector graphics for our test case, especially with compute-centric approaches. Tessellation stood dominated in our test case results by compute-centric pipeline, and \emph{feels} dated as a symptom.
+
+\subsection{Product Retrospective}
+Our research \emph{is} our product and methodology. We prove our framework's ingenuity through use; the benchmarks deliberated to support our synthesized theories and test cases prove that. An extended test trial rewarded itself through valid results and feedback, and the features and API provided are \emph{useful}.\medskip
+
+We feel successful in engineering a product to analyze vector graphics with finer granularity. Our framework made capturing benchmarks on image complexity, tessellation costs, and rendering easy. Moreover, all aspects of our framework's methodology were utilized in our test case, including integration into NVIDIA\copyright NSight Systems for further analysis in the discussion, proving value to each design choice.

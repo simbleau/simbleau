@@ -1,0 +1,37 @@
+\section{Theory}\label{sec:theory}
+Presently, hardware-accelerated rendering of vector graphics is fairly onerous for those unfamiliar with the imaging model. This difficulty leads many to wonder if the 2D imaging model is nearing uselessness, or can we prove, with testable predictions, that 2D imaging can extend its usefulness? Due to the evolving nature and experimentation still ongoing, nothing has earned an established reputation or developed with mature documentation and resources.\medskip
+
+The lack of mature resources has imposed a steep learning curve for developers. Moreover, developers question the certainty of adopting the image model with no mainstream attention. Hence, we find it to be an appropriate step to provide tooling for such concerns. The following sections explain patterns that guide our decision-making and methodology in the following section.
+
+\subsection{Eclectic Optimization Goals}\label{sec:optimization_goals}
+Analyzing performance for vector graphics on the GPU is complicated due to many optimization goals in varying contexts and dimensional spaces. While 3D graphics typically optimize for a level of graphic-richness without sacrificing an acceptable frame rate, 2D graphics have many different cultural applications. Optimization goals may be low latency, power consumption in mobile, the contention of scarce resources (CPU $\Leftrightarrow$ GPU bandwidth), or balancing several of these factors.\medskip
+
+Performing a hardware-accelerated performance analysis is a stark contrast to traditional time trials and discrete measurements such as \textit{fps}. In typical cases, these metrics are usually enough, and \emph{Big-O} is a decent proxy. However, GPU analysis tools should be more contextually agnostic, offer accurate instrumentation, and support hardware metric sampling to yield measurements that support varied optimization goals.
+
+\subsection{Rendering Models}
+Technologies and research examined in our literature review appear diverging and experimental, but there are some similarities between items. Below, we interpret vector rendering classifications but admit there are no strict definitions or generalized approaches.
+
+\subsubsection{Pre-computation Models}\label{sec:precomp_models}
+We define pre-computation rendering models as an umbrella term for rendering techniques that pay computer resources up-front at runtime for a GPU-friendly representation. These approaches typically leverage GPU caching and re-use of computed assets in volatile memory (RAM, GPU memory). Pre-computation models almost always optimize inexpensive re-draw of static vector graphics and may often be computed on the CPU before being uploaded to a storage buffer on the GPU. Some examples include:
+\begin{itemize}
+    \item Glyph caching for inexpensive text rendering
+    \item CPU Tessellation uploaded to GPU storage buffers
+    \item Random-access vector graphics (\cref{sec:RAVG})
+\end{itemize}
+
+\subsubsection{Interpreted Models}\label{sec:interpreted_models}
+
+Contrary to pre-computation models, \textit{interpreted} models are techniques that do not rely heavily on caching a GPU-friendly version upfront. Hence, these techniques are optimized better for dynamism, with shape evaluation calculated on the GPU. These techniques traditionally leverage more GPU features and pipelining such as compute kernels to circumnavigate the rigidity of the graphics pipeline. Such methods are typically the only practical filter for dynamism, interactivity, or animation solutions. Some examples include:
+\begin{itemize}
+    \item Parallel winding number calculation (\cref{sec:scanline_vg})
+    \item piet-gpu (\cref{sec:piet-gpu})
+    \item Pathfinder 3 (\cref{sec:Pathfinder})
+\end{itemize}
+
+\subsection{Feature Variance}
+Rendering techniques are difficult to compare on the GPU because it is often unclear to the extent of hardware leveraging and features used. Providing an analytic framework to benchmark and measure arbitrary axes of vector graphics seems necessary to encourage proving specific models and techniques with context to others. Current research claims mainly consist of cursory comparisons or time trials. Such claims are usually anecdotal, failing to provide a complete story and significance to new techniques.\medskip
+
+An extensible API which rapidly prototypes benchmarks with visualization support would understandably mitigate speculation. By benchmarking, performance results would provide confidence in research and survey the current 2D GPU path-rendering capability. This capability would hopefully modernize expectations and tone for vector renderers. These optics on outlying behavior can highlight lacking performance and aid in explaining obscure phenomena.
+
+\subsection{Referential Comparison}\label{sec:referential_comparison}
+As we previously mentioned, there are competing optimization goals and varying hardware leverage in vector rendering. Given this lack of coherence and objective performance expectations for a vector renderer, a baseline would be helpful: ``\textit{What \emph{are} the modern expectations of a vector graphic renderer?}''

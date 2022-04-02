@@ -1,0 +1,149 @@
+% Spencer C. Imbleau
+% 
+% Thesis Source
+% Appalachian State University
+
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[toc]{appendix}
+% For embedding SVGs in TeX!
+\usepackage{svg}
+\usepackage{amsmath}
+% For captioning assets!
+\usepackage{graphicx}
+\usepackage[export]{adjustbox}
+\fboxsep=2mm%padding thickness
+\usepackage{stackengine}
+% For clickable and colorable hyperlinks
+\usepackage{xcolor}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=false,
+}
+% For multiple columns
+\usepackage{multicol}
+% For floating figures
+\usepackage{float}
+% For the adjusting the width environment (paragraph indents)
+\usepackage{changepage}
+% For custom table of contents lists
+\usepackage{tocloft}
+\newlistof{equations}{equ}{\listequationsname} % Equation List in TOC
+% For § symbols and such when referencing sections.
+\usepackage{cleveref}
+% Use Minted for syntax highlighting and code examples.
+\usepackage{minted}
+% For making new figures
+\usepackage{newfloat}
+% Declare a custom list, list of code examples
+\DeclareFloatingEnvironment[
+    fileext=los,
+    listname={List of Code Examples},
+    name={Code Example},
+    placement=H,
+]{snippet}
+
+% Section Formatting
+\crefformat{section}{\S#2#1#3} % see manual of cleveref, section 8.2.1
+\crefformat{subsection}{\S#2#1#3}
+\crefformat{subsubsection}{\S#2#1#3}
+\crefformat{paragraph}{\S#2#1#3}
+\crefformat{snippet}{code ex. #1}
+\crefformat{appendix}{appendix #1}
+\setcounter{secnumdepth}{4}
+
+% Formatting
+\newcommand{\code}[1]{\mintinline{rust}{#1}}
+\newcommand{\todo}[1]{\textcolor{red}{TODO: {#1}}}
+\newcommand{\tocequation}[1]{%
+\addcontentsline{equ}{equations}{\protect\numberline{\theequation}#1}\par}
+\newcommand{\tocsnippet}[1]{%
+\addcontentsline{cod}{snippets}{\protect\numberline{\theequation}#1}\par}
+
+% Vocabulary
+\newcommand{\listequationsname}{List of Equations}
+\newcommand{\listsnippetsname}{List of Code Examples}
+\newcommand{\thesistitle}{Understanding 2D Vector Graphics on GPUs}
+\newcommand{\thesisrepo}{\href{hhttps://github.com/simbleau/simbleau/tree/research/thesis-master}{https://github.com/simbleau/simbleau/tree/research/thesis-master}}
+\newcommand{\toollinkedname}{\href{https://github.com/simbleau/\toolname}{\toolname}}
+\newcommand{\toolname}{vgpu-bench}
+
+% Custom commands
+% The size dimensions of all SVG figures! This is changeable!
+\newdimen\mywidth \newdimen\myheight
+\mywidth=\linewidth
+\myheight=7in
+% Here is how I define how SVGs are rendered in the document
+\newcommand{\widesvg}[3]{
+    \begin{figure}[H]
+    \centering
+    \underline{
+        \includesvg[width=\linewidth, height=7in, keepaspectratio]{#1}
+    }\\
+    \scriptsize Source: #3 % Attribution required by CC
+    \caption{#2}
+    \end{figure}
+}
+\newcommand{\svg}[3]{
+    \begin{figure}[H]
+    \centering
+    \underline{
+        \includesvg[width=.67\mywidth, height=.67\myheight, keepaspectratio]{#1}
+    }\\
+    \scriptsize Source: #3 % Attribution required by CC
+    \caption{#2}
+    \end{figure}
+}
+\newcommand{\smallsvg}[3]{
+    \begin{figure}[H]
+    \centering
+    \underline{
+        \includesvg[width=.4\mywidth, height=.4\myheight, keepaspectratio]{#1}
+    }\\
+    \scriptsize Source: #3 % Attribution required by CC
+    \caption{#2}
+    \end{figure}
+}
+
+% Start document
+\begin{document}
+
+% Turn off page numbering
+\pagenumbering{gobble}
+% Cover
+\include{Cover}
+\include{Approval}
+% Turn on roman page numbering
+\pagenumbering{roman}
+\setcounter{page}{1}
+% Preface Sections
+\input{Abstract}
+\clearpage
+\input{Acknowledgements}
+\clearpage
+\input{Preface}
+\clearpage
+\input{TOC}
+\input{LOT}
+\input{LOF}
+\input{LOE}
+\input{LOC}
+% Turn on arabic page numbering and reset count
+\pagenumbering{arabic}
+\setcounter{page}{1}
+% Sections
+\input{Background}
+\input{Introduction}
+\input{Literature}
+\input{Theory}
+\input{Methodology}
+\input{Results}
+\input{Discussion}
+\input{Conclusion}
+% Bibliography
+\include{Bibliography}
+% Appendix
+\include{Appendix}
+
+\end{document}

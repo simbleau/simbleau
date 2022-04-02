@@ -1,0 +1,214 @@
+\section{Background}\label{sec:background}
+
+Vector graphics are a unique image model, ideal for simple graphics that can be resolution independent, lightweight, and dynamic. This section will overview history, contention, and how to benefit from the image model.
+
+\subsection{Image Models}
+Contrary to vector graphics, \emph{raster} images are established and used eagerly among computers today; raster graphics are likely what comes to mind when we think of images. Raster images are rendered by reading pixels or data fragments containing color and tonal information, typically stored in rows. These images are stored explicitly, inherently requiring no additional arithmetic to copy and display to a screen buffer during \emph{rasterization}. Explicit storage makes the memory model of raster graphics the poster child for performant, elementary graphics. The first implementation of raster graphics was published in March of 1971 by Michael A. Noll in his publication  \textit{Scanned-Display Computer Graphics}\cite{Noll71}. The philosophy remains simple: store images in memory as discrete pixels, pre-computed such that rendering requires no additional computational overhead.\medskip
+
+On the contrary, vector images are formatted and stored as geometric primitives in an implicit form. Generally speaking, vector images store points, lines, and equations rather than pixels. During the rasterization stage of vector graphic rendering, \emph{varyings}, such as scale, are applied to the data to produce a discrete image. The first successful implementation of this concept was noticeably earlier than raster, presented by Turing award laureate Ivan Sutherland\cite{Sutherland88} in his seminal work Sketchpad\cite{Sutherland63} (1963).
+
+\subsection{Contention in Vector Graphics}
+
+Analytic vector graphic rendering brings hardship. This section will attempt to summarize friction encountered with vector graphics.
+
+\subsubsection{Image encoding}\label{sec:image_encoding}
+Vector image encoding has many well-known implementations, such as \textit{pdf} or \textit{ai} by \textit{Adobe Inc}. Open source standards for vector image encoding also exist, namely The World Wide Web Consortium's (W3C) \textit{svg}, or \textit{Scalable Vector Graphics}, established as a standard for the web.\medskip
+
+W3C designed \textit{SVG} particularly to target static image content at first. Unfortunately, to this day, it is a highly complex specification that is slow to establish rendering support. Most modern web browsers have support for rendering \textit{svg} files, although a full implementation is not guaranteed and is comparatively rare to find.\medskip
+
+Yevhenii Reizner (\textit{RazrFalcon}\footnote{\href{https://github.com/RazrFalcon}{https://github.com/RazrFalcon}}), created a test suite poised to test \textit{svg} compliance and edge cases while developing their own \textit{svg} renderer named \href{https://github.com/RazrFalcon/resvg}{\textit{resvg}}. Yevhenii's tests encompass common web browsers and renderers, which quantify the lack of the spec's implementation\cite{Resvg}. As of March 2022, the results of their test suite cover more than 1400 edge cases and are shown in \cref{fig:resvg_tests} below.\medskip
+
+\widesvg
+% Path
+{assets/Resvg_Tests.svg}
+% Caption
+{\label{fig:resvg_tests}\textit{SVG} specification adherence test results compiled in \href{https://github.com/RazrFalcon/resvg/tree/5e8c634457a70f9ac2656dc59e40da841a8fbe9b}{ resvg}.}
+% Attribution
+{\href{https://github.com/RazrFalcon/resvg/tree/5e8c634457a70f9ac2656dc59e40da841a8fbe9b\#svg-support}{By Yevhenii Reizner, modifications by Spencer C. Imbleau, MPLv2.0}}
+
+\subsubsection{Locality}\label{sec:locality}
+Vector images suffer from a locality issue. Unlike raster graphics with color and fill information encoded explicitly, determining the fill of a pixel fragment in a vector image model requires knowledge of the entire image. Every pixel requires a calculated \textit{winding number}, or how many turns a curve takes around a point (pixel). After computing winding numbers, the image requires a presentation attribute called a \textit{fill-rule} which determines if a winding number is interpreted as \emph{inside} or \emph{outside} of a shape. In simple terms, a renderer requires information about all paths to determine any given pixel's fill.
+
+\svg
+% Path
+{assets/Fill_Rules.svg}
+% Caption
+{\label{fig:fill_rule}Two differing fill-rules.}
+% Attribution
+{By Spencer C. Imbleau, MIT/Apache 2.0}
+
+The locality issue negates certain advantages in the classic GPU parallel rendering structure. Moreover,  this issue implies that rendering vector graphics might be a sequentially solved problem, difficult to parallelize.
+
+\subsubsection{The Bézier curve}
+Efficient parallelism of path tracing is difficult. While the concept of the universal curve was engineered with relative simplicity, handling a system of curves non-atomically is complex.\medskip
+
+The curve concept is intuitive, being that a curve is simply a linear interpolation between control points. The basics begin with De Casteljau's algorithm\cite{Pomax22}, given in Equation \cref{eq:bezier}. De Casteljau algorithm defines the shape of a Bézier curve \(B\) to be within \(t \in [0,1]\) of an arbitrary degree \(n\), where \(n\) is the number of control points \(\beta_0, \ldots, \beta_n\).\medskip
+
+\tocequation{Equation of a Bézier curve}
+\begin{equation}\label{eq:bezier}
+B(t) = \sum_{i=0}^{n}\beta_{i}b_{i,n}(t)
+\end{equation}
+\begin{center}
+where \(b\) is a Bernstein basis polynomial.
+\end{center}
+\[
+b_{i,n}(t) = \binom{n}{i}(1-t)^{n-i}t^i.
+\]\medskip
+
+Tracing a curve's pixels is as simple as solving this equation in small increments, or \textit{steps}, and connecting the dots. Increments should be small enough to minimize visual error during rasterization for a given display. Interpolating a quadratic (\(N=3\)) curve from 10 segments is shown below in \cref{fig:quadratic_bezier_curve}.\medskip
+
+\svg
+% Path
+{assets/Quadratic_Bezier.svg}
+% Caption
+{\label{fig:quadratic_bezier_curve}Visualizing linear interpolation of a quadratic Bézier curve.}
+% Attribution
+{\href{https://commons.wikimedia.org/wiki/File:Quadratic_Beziers_in_string_art.svg}{By Cmglee, modifications by Spencer C. Imbleau, CC-BY-SA-3.0}}\medskip
+
+The concept of Bézier curves has been static for decades, and the lack of GPU features and flexibility in the pipeline have barred most experimentation. Complexity further increases with image processing, such as stroking, compositing, blending, or styling shapes, which are conventional necessities to the image model.
+
+\subsection{Benefits of Vector Graphics}
+One should be aware of the implications of vector graphics and hence why we choose to examine them today. Given the effortless performance and tailored pipeline of raster graphics, it is a reasonable response to wonder why or how we can improve the imaging model with vector graphics. In the following sections, we will discuss the benefits of vector graphics.
+
+\subsubsection{Lossless graphic fidelity}
+Phones, televisions, and desktops have various resolutions and pixel densities, creating the need for resolution-independent graphics. We can solve this problem and show the benefit of lossless graphic fidelity with scaling in \cref{fig:bitmap_vs_svg} below. Vector graphics retain infinitesimal graphic fidelity at any scale or resolution, which implicates resolution independence. Although this is not a zero-cost abstraction for rendering, vector graphics are more portable across devices.\medskip
+
+\svg
+% Path
+{assets/Bitmap_VS_SVG.svg}
+% Caption
+{\label{fig:bitmap_vs_svg}Scaling comparison between vector and raster types.}
+% Attribution
+{\href{https://commons.wikimedia.org/w/index.php?curid=1183592}{By Yug, modifications by Cfaerber et al., CC BY-SA 2.5}}\medskip
+
+\subsubsection{Storage savings}\label{sec:storage_savings}
+Given that raster images are encoded pixel data, up-scaling raster images will grow the file size increasingly. On the contrary, vector graphics do not intrinsically encode concrete dimensions, and thus, file size is constant.\medskip
+
+To prove this, we present a graphic of impossible cubes in \cref{fig:impossible_cubes} and storage savings in Table \cref{tab:impossible_cubes_stats} below. The graphic file is canonically encoded in \textit{svg} format, a common vector format. It is then scaled and saved as a lossless raster format, \textit{png} encoding. While \textit{svg} can grow and shrink without adjustments to file data, \textit{png} can not. As such, we grow the \textit{svg} to larger sizes and measure how the storage footprint changes for the \textit{png} format.\medskip
+
+\svg
+% Path
+{assets/Impossible_Cubes.svg}
+% Caption
+{\label{fig:impossible_cubes}\textit{Impossible cubes}.}
+% Attribution
+{\href{https://freesvg.org/by/OpenClipart}{OpenClipart, SVG ID: 33931 , Public Domain}}\medskip
+
+% Begin table
+\begin{table}[H]
+\centering
+\begin{tabular}{ |p{2cm}||p{2cm}|p{2cm}|p{2cm}|p{2cm}|  }
+\hline
+\multicolumn{5}{|c|}{SVG vs PNG File Storage} \\
+\hline
+&SVG&PNG @ 1x&PNG @3x&PNG @6x\\
+\hline
+Size (KB)&9.4&61&210&474\\
+\hline
+Savings&&84.49\%&95.53\%&98.02\%\\
+\hline
+\end{tabular}
+\caption{\label{tab:impossible_cubes_stats}PNG file bloat from \cref{fig:impossible_cubes}.}
+\end{table}
+\medskip
+
+The methodology for Table \cref{tab:impossible_cubes_stats} is explained in \cref{appendix:svg_vs_png}. The results show that vector types possess distinguished encoding supremacy resilient to scaling. Storage footprint has significant benefits when a file size incurs empirical consequences, such as latency incurred over network loading (e.g., web pages). It is also worth briefly mentioning \textit{svg} is an \textit{xml} format, which characteristically has (tons of) repeated data. Compression algorithms, such as \textit{svgz}, can make these results \emph{better}.
+
+\subsubsection{Powerful primitives}
+Vector images amalgamate several primitives, such as points, lines, and Bézier curves. Bézier curves will be of particular interest, engineered as a ``universal curve''. The primitive's inherent malleability attributes this moniker; curves may be mutated directly with many abstract geometric transformations and through the control points.\medskip
+
+\svg
+% Path
+{assets/Cubic_Bezier.svg}
+% Caption
+{A cubic Bézier curve with control points \(P0\), \(P1\), \(P2\), and \(P3\).}
+% Attribution
+{\href{https://commons.wikimedia.org/wiki/File:Bezier_curve.svg}{Wikimedia Commons, Public domain}}
+\label{fig:cubic_bezier_curve}\medskip
+
+All curves can deform via affine transformations, such as translation and rotation. Curves also support sophisticated operations such as warping. Vector graphics also typically have support for complex set operations, z-ordering, and rich styling\cite{Barr84}, although implementation support varies. Curves are the crux of vector graphics because of their complex features and mathematical properties. Evermore interestingly, all complex shapes can be subdivided into piecewise Bézier curves.\medskip
+
+\widesvg
+% Path
+{assets/Blending.svg}
+% Caption
+{\label{fig:compositing}Compositing examples in vector graphics.}
+% Attribution
+{\href{https://dev.w3.org/SVG/modules/compositing/master/Overview.html}{\textit{SVG} Compositing Specification by W3C\copyright, \href{https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document}{W3C\copyright License}}}\medskip
+
+Moreover, the malleability of Bézier curves leads to exciting implications for physics and animation. Finally, because vectors are independent of scale, we benefit from infinitesimally-precise data, valuable for scientific visualization and modeling.
+
+\subsection{Disadvantages of Vector Graphics}
+While the vector imaging model can benefit us, there are cons to the model which impact a user's decision to adopt it.
+
+\subsubsection{Indirection costs}
+It is generally much slower to process the vector imaging model. The raster model's performance is a symptom of image data stored in a readily accessible map of color data, called a \textit{bitmap}. Unlike a bitmap, vector image data is stored implicitly as path data. This path data then must undergo processing in addition to rasterization. This processing expense is unique to vector types. Since the model is not stored in an immediately readable format, it is not easy to compete with the performance of raster graphics.\medskip
+
+This cost is negatively compounded by the locality issue discussed in section \cref{sec:locality}, requiring recalculation of the entire shape for minor alterations. Expensive redraws are indeed an obstacle for any dynamic, real-time applications which attempt to minimize input latency. While computation caching may help processing speed, this comes at the expense of additional memory.
+
+\subsubsection{Realism storage bloat}
+Contradicting the results of section \cref{sec:storage_savings}'s \textit{Impossible Cubes}, vector graphics struggle to reach a graphic fidelity comparable to photo-realism without file bloat, branding vector graphics hostile for realistic visualization. The file storage savings observed in \cref{tab:impossible_cubes_stats} can be misleading due to the lack of complexity in the image. \textit{SVG} is poor at compressing complexity. Algorithms used to convert raster formats (\textit{jpg, png, etc.}) to vector formats (\textit{svg}) produce high-volume output, depending on the degree of color discontinuity. Conversion occurs by joining similarly colored pixels and approximating areas into shapes, reducing information. The number of color discontinuities found in the input may produce many paths, even approaching the number of pixels, depending on the level of the output detail requested. However, due to poor vector image encoding standards  cited in \cref{sec:image_encoding}, conversions are magnitudes larger than the original raster image. Despite larger storage requirements, information is never gained and ironically lost typically, making the resulting vector file less useful than expected.\medskip
+
+To prove this point, we present a vectorized image experiencing bloat, ``\textit{Landscape with the Castle of Massa di Carrara}''. This image, shown in \cref{fig:massa_di_carrara}, displays a raster variant (left) and vectorized format (right). The original raster dimensions are 791x600 pixels and formatted as a \textit{png}. Storage sizes of the variants are found in \cref{tab:massa_di_carrara}.\medskip
+
+\widesvg
+% Path
+{assets/Realistic_VG.svg}
+% Caption
+{\label{fig:massa_di_carrara}A raster (left) and vectorization (right) of famous art.}
+% Attribution
+{Leo von Klenze, 1827}\medskip
+
+% Begin table
+\begin{table}[H]
+\centering
+\begin{tabular}{ |p{2cm}||p{2cm}|p{2cm}|p{2cm}| }
+\hline
+\multicolumn{4}{|c|}{Realism in PNG vs SVG File Storage}\\
+\hline
+&PNG&SVG&SVGZ\\
+\hline
+Size (KB)&$979.1$&$7266.4$&$2563.1$\\
+\hline
+Bloat&&742.15\%&261.77\%\\
+\hline
+\end{tabular}
+\caption{\label{tab:massa_di_carrara}Vectorization file bloat from \cref{fig:massa_di_carrara}.}
+\end{table}
+
+\subsection{Tessellation}\label{sec:tessellation}
+Tessellation, also called triangulation, may perhaps be the most famous, straightforward, and naive solution for 2D rendering. Tessellation is the conversion of complex paths into discrete triangles for use in a traditional rendering engine. This computation flattens curve primitives into line segments to connect all vertices into triangles, which is often a significant computation. Tessellation facilitates easy integration with any GPU graphics engine and requires few GPU features, making it an attractive option. Generally speaking, the complexity of paths is abstracted away. A tessellator ingests complex shapes as input and generates triangle geometry easily consumed by graphics APIs such as OpenGL, Vulkan or Direct3D.\medskip
+
+\svg
+% Path
+{assets/Tessellation.svg}
+% Caption
+{A visualization of tessellation.}
+% Attribution
+{\href{https://github.com/nical/lyon/blob/540a29c3726cdc79ffeb8a7ac3fbc793e63dc87b/crates/geom/src/lib.rs\#L24}{Lyon, MIT/Apache 2.0}}
+\medskip
+
+Vector tessellators are a special snowflake because they must operate on curves. To allow this, libraries like \href{https://github.com/nical/lyon}{\textit{Lyon}} perform curve flattening, which uses a linear approximation to generate line segments\cite{Silva18}.\medskip
+
+\smallsvg
+% Path
+{assets/Flattening.svg}
+% Caption
+{Curve flattening of a cubic Bézier curve.}
+% Attribution
+{\href{https://github.com/nical/lyon/blob/540a29c3726cdc79ffeb8a7ac3fbc793e63dc87b/crates/geom/src/lib.rs\#L24}{Lyon, MIT/Apache 2.0}}\medskip
+
+Curve flattening is a function of \textit{tolerance}, the maximum distance between a curve and its linear approximation. Tolerance directly affects precision, and hence, a smaller tolerance provides higher precision and more segments. This variable is usually chosen in conjunction as a function of zoom level.\medskip
+
+\widesvg
+% Path
+{assets/Tolerance.svg}
+% Caption
+{Permitted approximation error (tolerance) in curve flattening.}
+% Attribution
+{\href{https://github.com/nical/lyon/blob/1c391badb70f8d5d23b45ecb4577f54a5c777122/crates/tessellation/src/lib.rs\#L10}{Lyon, MIT/Apache 2.0}}\medskip
+
+Using tessellation as a fulcrum or supplement in vector pipelines is quite common. For example, one can find parts of Microsoft's Direct2D API\cite{D2D_Tess} leverage a tessellation-based approach.
+
+\subsection{Conclusion}
+Vector graphics promise extraordinary benefits over raster graphics, such as lossless graphic fidelity, storage savings, and powerful primitives. These benefits make vector graphics a flexible image model and worth considering.

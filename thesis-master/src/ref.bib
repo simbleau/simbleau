@@ -1,0 +1,433 @@
+@PROCEEDINGS{Silva18,
+author = {Nicolas Silva},
+title = {Vector graphics rendering on the GPU in Rust with Lyon},
+url = {https://www.youtube.com/watch?v=2Ng5kpDirDI},
+organization = {RustFest 2018},
+place={Paris}, 
+year={2018}, 
+month={May}
+}
+
+@misc{Lyon_Sweep,
+  author = {Nicolas Silva},
+  title = {Tessellator},
+  year = {2022},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/nical/lyon/wiki/Tessellator#sweep-line}},
+  commit = {5a6380f0cdb021ac810c3b93b1568daf30b82d75}
+}
+
+@article {Li16,
+title = {Efficient GPU Path Rendering Using Scanline Rasterization},
+author = {Rui Li and Qiming Hou and Kun Zhou},
+journal = {ACM Transactions on Graphics},
+volume = {35},
+number = {6},
+pages = {},
+year = {2016}
+}
+
+@article{Nehab08,
+author = {Nehab, Diego and Hoppe, Hugues},
+title = {Random-Access Rendering of General Vector Graphics},
+year = {2008},
+issue_date = {December 2008},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {27},
+number = {5},
+issn = {0730-0301},
+url = {https://doi.org/10.1145/1409060.1409088},
+doi = {10.1145/1409060.1409088},
+abstract = {We introduce a novel representation for random-access rendering of antialiased vector graphics on the GPU, along with efficient encoding and rendering algorithms. The representation supports a broad class of vector primitives, including multiple layers of semitransparent filled and stroked shapes, with quadratic outlines and color gradients. Our approach is to create a coarse lattice in which each cell contains a variable-length encoding of the graphics primitives it overlaps. These cell-specialized encodings are interpreted at runtime within a pixel shader. Advantages include localized memory access and the ability to map vector graphics onto arbitrary surfaces, or under arbitrary deformations. Most importantly, we perform both prefiltering and supersampling within a single pixel shader invocation, achieving inter-primitive antialiasing at no added memory bandwidth cost. We present an efficient encoding algorithm, and demonstrate high-quality real-time rendering of complex, real-world examples.},
+journal = {ACM Trans. Graph.},
+month = dec,
+articleno = {135},
+numpages = {10}
+}
+
+@misc{Lyon,
+  author = {Silva, Nicolas},
+  title = {Lyon},
+  year = {2018},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/nical/lyon}},
+  commit = {044b380955c5a075ac525c7b92d0884f0379ac7a}
+}
+
+ @misc{D2D_Tess, title={Geometry Realizations Overview}, url={https://docs.microsoft.com/en-us/windows/win32/direct2d/geometry-realizations-overview#why-use-geometry-realizations}, journal={Win32 apps | Microsoft Docs}, author={Microsoft},publisher={Microsoft}, year={2018}, month={May}} 
+ 
+     @article{Loop05,
+    author = {Loop, Charles and Blinn, Jim},
+    title = {Resolution Independent Curve Rendering Using Programmable Graphics Hardware},
+    year = {2005},
+    issue_date = {July 2005},
+    publisher = {Association for Computing Machinery},
+    address = {New York, NY, USA},
+    volume = {24},
+    number = {3},
+    issn = {0730-0301},
+    url = {https://doi.org/10.1145/1073204.1073303},
+    doi = {10.1145/1073204.1073303},
+    abstract = {We present a method for resolution independent rendering of paths and bounded regions, defined by quadratic and cubic spline curves, that leverages the parallelism of programmable graphics hardware to achieve high performance. A simple implicit equation for a parametric curve is found in a space that can be thought of as an analog to texture space. The image of a curve's B\'{e}zier control points are found in this space and assigned to the control points as texture coordinates. When the triangle(s) corresponding to the B\'{e}zier curve control hull are rendered, a pixel shader program evaluates the implicit equation for a pixel's interpolated texture coordinates to determine an inside/outside test for the curve. We extend our technique to handle anti-aliasing of boundaries. We also construct a vector image from mosaics of triangulated B\'{e}zier control points and show how to deform such images to create resolution independent texture on three dimensional objects.},
+    journal = {ACM Trans. Graph.},
+    month = jul,
+    pages = {1000–1009},
+    numpages = {10},
+    keywords = {graphics hardware algorithms, curve rendering, resolution independence, vector representations}
+    }
+
+      
+
+@article{Ganacim14,
+  title = {Massively-Parallel Vector Graphics},
+  author = {Ganacim, F. and Lima, R. S. and de Figueiredo, L. H. and Nehab, D.},
+  journal = {ACM Transactions on Graphics (Proceedings of the ACM SIGGRAPH Asia 2014)},
+  year = {2014},
+  volume = {33},
+  number = {6},
+  pages = {229},
+  doi = {10.1145/2661229.2661274},
+}
+
+ @Article{Levien20, title={A sort-middle architecture for 2D graphics}, url={https://raphlinus.github.io/rust/graphics/gpu/2020/06/12/sort-middle.html}, journal={Raph Levien's blog}, author={Levien, Raph Linus}, year={2020}, month={Jun}} 
+ 
+  @misc{WebGPU, title={WebGPU}, url={https://www.w3.org/TR/webgpu/}, journal={WebGPU W3C Working Draft}, author={W3C®}, year={2021}, month={Jun}} 
+  
+  @inproceedings{Laine11,
+author = {Laine, Samuli and Karras, Tero},
+title = {High-Performance Software Rasterization on GPUs},
+year = {2011},
+isbn = {9781450308960},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2018323.2018337},
+doi = {10.1145/2018323.2018337},
+abstract = {In this paper, we implement an efficient, completely software-based graphics pipeline on a GPU. Unlike previous approaches, we obey ordering constraints imposed by current graphics APIs, guarantee hole-free rasterization, and support multisample antialiasing. Our goal is to examine the performance implications of not exploiting the fixed-function graphics pipeline, and to discern which additional hardware support would benefit software-based graphics the most.We present significant improvements over previous work in terms of scalability, performance, and capabilities. Our pipeline is malleable and easy to extend, and we demonstrate that in a wide variety of test cases its performance is within a factor of 2--8x compared to the hardware graphics pipeline on a top of the line GPU.Our implementation is open sourced and available at http://code.google.com/p/cudaraster/},
+booktitle = {Proceedings of the ACM SIGGRAPH Symposium on High Performance Graphics},
+pages = {79–88},
+numpages = {10},
+location = {Vancouver, British Columbia, Canada},
+series = {HPG '11}
+}
+
+@article{Kilgard12,
+author = {Kilgard, Mark J. and Bolz, Jeff},
+title = {GPU-Accelerated Path Rendering},
+year = {2012},
+issue_date = {November 2012},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {31},
+number = {6},
+issn = {0730-0301},
+url = {https://doi.org/10.1145/2366145.2366191},
+doi = {10.1145/2366145.2366191},
+abstract = {For thirty years, resolution-independent 2D standards (e.g. PostScript, SVG) have depended on CPU-based algorithms for the filling and stroking of paths. Advances in graphics hardware have largely ignored accelerating resolution-independent 2D graphics rendered from paths.We introduce a two-step "Stencil, then Cover" (StC) programming interface. Our GPU-based approach builds upon existing techniques for curve rendering using the stencil buffer, but we explicitly decouple in our programming interface the stencil step to determine a path's filled or stroked coverage from the subsequent cover step to rasterize conservative geometry intended to test and reset the coverage determinations of the first step while shading color samples within the path. Our goals are completeness, correctness, quality, and performance---yet we go further to unify path rendering with OpenGL's established 3D and shading pipeline. We have built and productized our approach to accelerate path rendering as an OpenGL extension.},
+journal = {ACM Trans. Graph.},
+month = nov,
+articleno = {172},
+numpages = {10},
+keywords = {stencil buffer, path rendering, OpenGL, vector graphics}
+}
+
+@article{Noll71,
+author = {Noll, A. Michael},
+title = {Scanned-Display Computer Graphics},
+year = {1971},
+issue_date = {March 1971},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {14},
+number = {3},
+issn = {0001-0782},
+url = {https://doi.org/10.1145/362566.362567},
+doi = {10.1145/362566.362567},
+abstract = {A television-like scanned-display system has been successfully implemented on a Honeywell DDP-224 computer installation. The scanned image is stored in the core memory of the computer, and software scan conversion is used to convert the rectangular coordinates of a point to the appropriate word and bit in an output display array in core storage. Results thus far indicate that flicker-free displays of large amounts of data are possible with reasonably fast graphical interaction. A scanned image of size 240 X 254 points is displayed at a 30 frame-per-second rate.},
+journal = {Commun. ACM},
+month = {mar},
+pages = {143–150},
+numpages = {8},
+keywords = {scanned-display, computer graphics, raster displays, scan conversion}
+}
+
+@inproceedings{Sutherland63,
+author = {Sutherland, Ivan E.},
+title = {Sketch Pad a Man-Machine Graphical Communication System},
+year = {1964},
+isbn = {9781450379328},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/800265.810742},
+doi = {10.1145/800265.810742},
+abstract = {This paper was reproduced from the AFIPS Conference proceedings, Volume 23, of the Spring Joint Computer Conference held in Detroit, 1963. Mr. Timothy Johnson suggested that this report contained essentially the same material he spoke on at the SHARE D/A Committee Workshop.},
+booktitle = {Proceedings of the SHARE Design Automation Workshop},
+pages = {6.329–6.346},
+series = {DAC '64}
+}
+
+@Article{Sutherland88,
+  author =       "I. E. Sutherland",
+  title =        "Micropipelines",
+  volume =       "32",
+  number =       "6",
+  pages =        "720--738",
+  month =        jun,
+  year =         "1989",
+  CODEN =        "CACMA2",
+  DOI =          "https://doi.org/10.1145/63526.63532",
+  ISSN =         "0001-0782 (print), 1557-7317 (electronic)",
+  ISSN-L =       "0001-0782",
+  bibdate =      "Thu May 30 09:41:10 MDT 1996",
+  bibsource =    "http://www.acm.org/pubs/toc/;
+                 http://www.math.utah.edu/pub/tex/bib/acm-turing-awards.bib",
+  URL =          "http://www.acm.org/pubs/toc/Abstracts/0001-0782/63532.html",
+  acknowledgement = ack-nhfb,
+  journal =     "Communications of the ACM",
+  journal-URL =  "http://portal.acm.org/browse_dl.cfm?idx=J79",
+  keywords =     "design; performance",
+  remark =       "This is the 1988 ACM Turing Award Lecture. The 1989
+                 ACM Turing Award was given to William Kahan, but his
+                 lecture was never published.",
+  subject =      "{\bf B.5.1}: Hardware, REGISTER-TRANSFER-LEVEL
+                 IMPLEMENTATION, Design, Control design. {\bf B.5.1}:
+                 Hardware, REGISTER-TRANSFER-LEVEL IMPLEMENTATION,
+                 Design, Data-path design. {\bf B.5.1}: Hardware,
+                 REGISTER-TRANSFER-LEVEL IMPLEMENTATION, Design, Styles.
+                 {\bf B.1.1}: Hardware, CONTROL STRUCTURES AND
+                 MICROPROGRAMMING, Control Design Styles, Hardwired
+                 control. {\bf B.7.1}: Hardware, INTEGRATED CIRCUITS,
+                 Types and Design Styles, VLSI (very large scale
+                 integration).",
+}
+
+@misc{Resvg,
+  author = {Reizner, Yevhenii},
+  title = {Resvg},
+  year = {2022},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/RazrFalcon/resvg/tree/5e8c634457a70f9ac2656dc59e40da841a8fbe9b#svg-support}},
+  commit = {5e8c634457a70f9ac2656dc59e40da841a8fbe9b}
+}
+
+
+ @misc{Pomax22, 
+ author={Pomax},
+ title={A primer on Bézier curves}, url={https://pomax.github.io/bezierinfo/#decasteljau}, journal={Pomax.github.io}, year={2022}, month={Jan}} 
+
+@article{10.1145/964965.808573,
+author = {Barr, Alan H.},
+title = {Global and Local Deformations of Solid Primitives},
+year = {1984},
+issue_date = {July 1984},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {18},
+number = {3},
+issn = {0097-8930},
+url = {https://doi.org/10.1145/964965.808573},
+doi = {10.1145/964965.808573},
+abstract = {New hierarchical solid modeling operations are developed, which simulate twisting, bending, tapering, or similar transformations of geometric objects. The chief result is that the normal vector of an arbitrarily deformed smooth surface can be calculated directly from the surface normal vector of the undeformed surface and a transformation matrix. Deformations are easily combined in a hierarchical structure, creating complex objects from simpler ones. The position vectors and normal vectors in the simpler objects are used to calculate the position and normal vectors in the more complex forms; each level in the deformation hierarchy requires an additional matrix multiply for the normal vector calculation. Deformations are important and highly intuitive operations which ease the control and rendering of large families of three-dimensional geometric shapes.},
+journal = {SIGGRAPH Comput. Graph.},
+month = {jan},
+pages = {21–30},
+numpages = {10},
+keywords = {Computational geometry, Deformation, Solid modeling}
+}
+
+
+@inproceedings{Barr84,
+author = {Barr, Alan H.},
+title = {Global and Local Deformations of Solid Primitives},
+year = {1984},
+isbn = {0897911385},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/800031.808573},
+doi = {10.1145/800031.808573},
+abstract = {New hierarchical solid modeling operations are developed, which simulate twisting, bending, tapering, or similar transformations of geometric objects. The chief result is that the normal vector of an arbitrarily deformed smooth surface can be calculated directly from the surface normal vector of the undeformed surface and a transformation matrix. Deformations are easily combined in a hierarchical structure, creating complex objects from simpler ones. The position vectors and normal vectors in the simpler objects are used to calculate the position and normal vectors in the more complex forms; each level in the deformation hierarchy requires an additional matrix multiply for the normal vector calculation. Deformations are important and highly intuitive operations which ease the control and rendering of large families of three-dimensional geometric shapes.},
+booktitle = {Proceedings of the 11th Annual Conference on Computer Graphics and Interactive Techniques},
+pages = {21–30},
+numpages = {10},
+keywords = {Deformation, Solid modeling, Computational geometry},
+series = {SIGGRAPH '84}
+}
+
+  
+
+@inproceedings{Chew87,
+author = {Chew, L. P.},
+title = {Constrained Delaunay Triangulations},
+year = {1987},
+isbn = {0897912314},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/41958.41981},
+doi = {10.1145/41958.41981},
+abstract = {Given a set of n vertices in the plane together with a set of noncrossing edges, the constrained Delaunay triangulation (CDT) is the triangulation of the vertices with the following properties: (1) the prespecified edges are included in the triangulation, and (2) it is as close as possible to the Delaunay triangulation. We show that the CDT can be built in optimal Ο(n log n) time using a divide-and-conquer technique. This matches the time required to build an arbitrary (unconstrained) Delaunay triangulation and the time required to build an arbitrary constrained (nonDelaunay) triangulation. CDTs, because of their relationship with Delaunay triangulations, have a number of properties that should make them useful for the finite-element method. Applications also include motion planning in the presence of polygonal obstacles in the plane and constrained Euclidean minimum spanning trees, spanning trees subject to the restriction that some edges are prespecified.},
+booktitle = {Proceedings of the Third Annual Symposium on Computational Geometry},
+pages = {215–222},
+numpages = {8},
+location = {Waterloo, Ontario, Canada},
+series = {SCG '87}
+}
+
+  
+@inproceedings{Qi12,
+author = {Qi, Meng and Cao, Thanh-Tung and Tan, Tiow-Seng},
+title = {Computing 2D Constrained Delaunay Triangulation Using the GPU},
+year = {2012},
+isbn = {9781450311946},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2159616.2159623},
+doi = {10.1145/2159616.2159623},
+abstract = {We propose the first GPU solution to compute the 2D constrained Delaunay triangulation (CDT) of a planar straight line graph (PSLG) consisting of points and edges. There are many CPU algorithms developed to solve the CDT problem in computational geometry, yet there has been no known prior approach using the parallel computing power of the GPU to solve this problem efficiently. For the special case of the CDT problem with a PSLG consisting of just points, which is the normal Delaunay triangulation problem, a hybrid approach has already been presented that uses the GPU together with the CPU to partially speed up the computation. Our work, on the other hand, accelerates the whole computation by the GPU. Our implementation using the CUDA programming model on NVIDIA GPUs is numerically robust with good speedup, of up to an order of magnitude, compared to the best sequential implementations on the CPU. This result is reflected in our experiment with both randomly generated PSLGs and real world GIS data with millions of points and edges.},
+booktitle = {Proceedings of the ACM SIGGRAPH Symposium on Interactive 3D Graphics and Games},
+pages = {39–46},
+numpages = {8},
+keywords = {GPGPU, Voronoi diagram, computational geometry},
+location = {Costa Mesa, California},
+series = {I3D '12}
+}
+
+  
+  
+   @misc{Eberly02, title={Triangulation by Ear Clipping}, url={https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf}, journal={Geometric Tools}, publisher={Geometric Tools}, author={Eberly, David}, year={2002}, month={Nov}} 
+   
+ @misc{Fyrd22, url={https://caniuse.com/svg-smil}, journal={SVG SMIL animation}, publisher={Can I Use}, author={Fyrd}} 
+ 
+ 
+ 
+@misc{Skia,
+  title = {Skia},
+  year = {2022},
+  publisher = {Google LLC},
+  author = {Google LLC},
+  journal = {Google Git},
+  howpublished = {\url{https://skia.googlesource.com/skia}}
+}
+
+
+@misc{Spinel_Features,
+  title = {Spinel},
+  year = {2022},
+  publisher = {Google LLC},
+  author = {Google LLC},
+  howpublished = {\url{https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/src/graphics/lib/compute/spinel/README.md}}
+}
+
+@misc{Spinel,
+  title = {Spinel},
+  year = {2022},
+  publisher = {Google LLC},
+  author = {Google LLC},
+  howpublished = {\url{https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/src/graphics/lib/compute/spinel}}
+}
+
+ @misc{Silva19, title={A look at pathfinder}, url={https://nical.github.io/posts/a-look-at-pathfinder.html}, journal={Eight million pixels and counting}, author={Silva, Nicolas}, year={2019}, month={May}} 
+
+@misc{Pathfinder_Features,
+  author = {Patric Walton},
+  title = {Pathfinder 3},
+  year = {2022},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/servo/pathfinder/tree/581eadfbeb61a973f73691f4672ad40d6e70e7b5#features}},
+  commit = {581eadfbeb61a973f73691f4672ad40d6e70e7b5}
+}
+
+@inproceedings{Green07,
+author = {Green, Chris},
+title = {Improved Alpha-Tested Magnification for Vector Textures and Special Effects},
+year = {2007},
+isbn = {9781450318235},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1281500.1281665},
+doi = {10.1145/1281500.1281665},
+abstract = {A simple and efficient method is presented which allows improved rendering of glyphs composed of curved and linear elements. A distance field is generated from a high resolution image, and then stored into a channel of a lower-resolution texture. In the simplest case, this texture can then be rendered simply by using the alpha-testing and alpha-thresholding feature of modern GPUs, without a custom shader. This allows the technique to be used on even the lowest-end 3D graphics hardware.With the use of programmable shading, the technique is extended to perform various special effect renderings, including soft edges, outlining, drop shadows, multi-colored images, and sharp corners.},
+booktitle = {ACM SIGGRAPH 2007 Courses},
+pages = {9–18},
+numpages = {10},
+location = {San Diego, California},
+series = {SIGGRAPH '07}
+}
+
+ @misc{Chlumsky17, url={https://onlinelibrary.wiley.com/doi/abs/10.1111/cgf.13265}, journal={Improved Corners with Multi-Channel Signed Distance Fields}, publisher={Wiley Online Library}, author={Chlumský, V. and Sloup, J. and Šimeček, I.}, year={2017}, month={Sep}} 
+
+ @misc{Walton18, title={GPU Rasterization, the Orphan Rules, and Rocket}, url={https://www.youtube.com/watch?v=AI7SLCubTnk}, journal={Bay Area Rust March 2017}, publisher={Air Mozilla}, author={Walton, Patrick}, year={2018}, month={Dec}} 
+ 
+ 
+
+@misc{StackDeveloperSurvey,
+    author={Stack Overflow},
+  title = {Stack Overflow Developer Survey 2021},
+  year = {2021},
+  publisher = {Stack Overflow},
+  journal = {Stack Overflow},
+  howpublished = {\url{https://insights.stackoverflow.com/survey/2021}}
+}
+
+ @misc{RustInProduction, title={Production}, url={https://www.rust-lang.org/production/users}, journal={Production Users - Rust Programming Language}, publisher={Rust Team}} 
+ 
+  @misc{Dursun20, title={Rust zero cost abstractions in action}, url={https://idursun.com/posts/rust_zero_cost_abstractions_in_action/}, journal={Scratch Pad}, author={Dursun, Ibrahim}, year={2020}, month={Feb}} 
+  
+   @misc{Crichton15, title={Rust once, Run everywhere: Rust blog}, url={https://blog.rust-lang.org/2015/04/24/Rust-Once-Run-Everywhere.html}, journal={The Rust Programming Language Blog}, publisher={Rust Team}, author={Crichton, Alex}, year={2015}, month={Apr}} 
+   
+   
+@misc{WhatUnsafeCanDo,
+    author={Public Domain},
+  title = {What Unsafe Can Do},
+  publisher = {Stack Overflow},
+  journal = {The Rustonomicon},
+  howpublished = {\url{https://doc.rust-lang.org/nomicon/what-unsafe-does.html}}
+}
+
+    
+@INPROCEEDINGS{RustServo,
+  author={Anderson, Brian and Bergstrom, Lars and Goregaokar, Manish and Matthews, Josh and McAllister, Keegan and Moffitt, Jack and Sapin, Simon},
+  booktitle={2016 IEEE/ACM 38th International Conference on Software Engineering Companion (ICSE-C)}, 
+  title={Engineering the Servo Web Browser Engine Using Rust}, 
+  year={2016},
+  volume={},
+  number={},
+  pages={81-89},
+  doi={}}
+
+
+ @misc{ApiGuidelines22, 
+    author={Public Domain},
+    year={2022},
+    month={Mar},
+    day={22},
+ title={Rust API guidelines},
+ howpublished = {\url{https://rust-lang.github.io/api-guidelines/checklist.html}}, journal={Checklist - Rust API Guidelines}, publisher={Rust-lang Team}} 
+
+   
+@misc{RustFoundation21,
+    author={Public Domain},
+    year={2021},
+    month={Feb},
+    day={8},
+  title = {Hello World!},
+  publisher = {Rust Foundation},
+  journal = {Rust Foundation},
+  howpublished = {\url{https://foundation.rust-lang.org/news/2021-02-08-hello-world/}}
+}
+
+@misc{PathfinderGlue,
+  author = {Spencer C. Imbleau},
+  title = {Render Glue},
+  year = {2022},
+  month = {Jan},
+  publisher = {GitHub},
+  journal = {GitHub repository},
+  howpublished = {\url{https://github.com/simbleau/vgpu-bench/blob/4e391671dad1605f8789df54f554db714ced8efb/src/bin/drivers/pathfinder_rendering/render_glue.rs}},
+  commit = {4e391671dad1605f8789df54f554db714ced8efb/}
+}
+
+ @misc{Nvidia22, title={User Guide, Nsight Systems Documentation}, url={https://docs.nvidia.com/nsight-systems/}, journal={Nsight Systems Documentation}, publisher={Nvidia Corp.}, year={2022}, month={Jan}} 
