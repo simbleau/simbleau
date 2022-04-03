@@ -3,7 +3,7 @@
 \subsection{Review}\label{sec:conclusion}
 Vector graphics pose unique properties which make the imaging model ideal for users who value resolution independence, storage footprint, or seek to benefit from implicit modeling. While the field is optimistic with experimentation and research, new and old technologies lack comprehensive performance comparison. Users seeking to integrate a rendering backend have little more than cursory time trials or \emph{Big-O} to encourage adoption, which is often insufficient.\medskip
 
-This inadequately felt entanglement among technology is an opportunity for further understanding. Analyzing performance on the GPU is \emph{hard}. Our research begins to deobfuscate the field of hardware-accelerated vector graphics with a novel benchmarking framework that easily integrates into GPU analysis tools with extensibility. We justified our framework's design decisions through methodology and a pilot test trial, which collected results defending our synthesized theories.\medskip
+This entanglement of information among technology is an opportunity for further understanding. Analyzing performance on the GPU is \emph{hard}. Our research sets a precedent to deobfuscate the field of hardware-accelerated vector graphics with a novel benchmarking framework. Our tool's extensible design and integration into GPU analysis tools will begin to rectify the inadequate comparative research. We justified our framework's design decisions through methodology and a pilot test trial, which collected results defending our synthesized theories.\medskip
 
 While \toollinkedname is the first step in bringing enhanced optics and context to eclectic options, there is still available work.\medskip
 
@@ -24,6 +24,9 @@ Another issue is standardization. The bloated \textit{svg} specification is an i
 
 \subsubsection{API enhancements}
 Since Rust is still in its infancy as a language, it is missing some key language features which would empower a more intuitive API.\medskip
+
+\paragraph{Integration}
+As the framework's ecosystem receives adoption, people will want to test against certain renderers or tessellators. The traits provided in the ``\textit{render-kit}'' and ``\textit{tessellation-kit}'' features provide a convenient interface and pre-written tests, although it would be beneficial if users could add modular dependencies which provide certain renderers, such as \textit{Pathfinder}\footnote{\href{https://github.com/servo/pathfinder}{https://github.com/servo/pathfinder}}, or certain tessellators, such as \textit{Lyon}\footnote{\href{https://github.com/nical/lyon}{https://github.com/nical/lyon}}, to test against.
 
 \paragraph{Variadic generics}
 Variadic generics are the ability to enable traits, functions, and data structures to be generic over a variable number of types. Currently, a monitor delegated to a \code{Benchmark} is passed as a \code{Box<dyn Monitor>}, where \code{Monitor} is a trait. Thus, trait objects are handled by a collection (\code{Vec}) for dispatch when polling the collection of monitors.\medskip
@@ -50,6 +53,9 @@ poll_monitors(mixed_mon);
 \end{snippet}
 \medskip
 
+\paragraph{Parallel runtime execution in \code{Driver}}
+The \code{Driver} is designed in such a way to execute benchmarks sequentially, as to eliminate interference. However, one may be a concerned with ``how x performs while y''. In such a case, this can currently be performed by launching two threads with two drivers, or two threads within a closure, but this is tedious ceremony that we would like to provide an API for.\medskip
+
 \paragraph{Asynchronous API}
 Currently, our \code{Driver} data structure is a synchronous runtime executor for benchmarks. While this works, extending the runtime further with parallel computing and asynchronous programming should be possible. Independent tasks, such as polling with a \code{Monitor}, could be faster and less resource-hungry asynchronously than with multi-threading.\medskip
 
@@ -75,3 +81,6 @@ fn main() -> Result<()> {
 }
 \end{minted}
 \end{snippet}
+
+\paragraph{Live Monitoring}
+Sometimes visualization is more important than accuracy, and in such cases, we want to provide the ability to visualize a live, updating plot. This has the benefit of seeing live impact in an interactive demo, as opposed to annotating the behavior. Such a plot would update when a \code{Monitor} returns a polled value.
