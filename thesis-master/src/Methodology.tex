@@ -124,7 +124,7 @@ pub fn main() -> Result<()> {
 \medskip
 
 \paragraph{GPU Metric Sampling}
-GPU metric samples may be necessary to collect to prove the efficacy of varying interpreted models (\cref{sec:interpreted_models}). For example, one may need to dissect hardware starvation, compute shaders in flight, poor parallelization, or identify expensive algorithms across hardware in a benchmark. Hence, this is why we provide NVIDIA\copyright instrumentation automatically to our library so we may attribute these anomalies with annotations. See \cref{fig:gpu_sampling} below for a GPU metric sampling example on an NVIDIA\copyright GeForce RTX 3060.
+GPU metric samples may be necessary to collect to prove the efficacy of varying parallel models\footnote{See \cref{sec:parallel_models}}. For example, one may need to dissect hardware starvation, compute shaders in flight, poor parallelization, or identify expensive algorithms across hardware in a benchmark. Hence, this is why we provide NVIDIA\copyright instrumentation automatically to our library so we may annotate these anomalies with annotations. See \cref{fig:gpu_sampling} below for a GPU metric sampling example on an NVIDIA\copyright GeForce RTX 3060.
 
 \widesvg
 % Path

@@ -70,7 +70,7 @@ We also acknowledge that the web has apps that may utilize more paths and data t
 
 \subparagraph{Render-Kit} As a feature of \toollinkedname, the ``\textit{render-kit}'' feature provides a minimal tessellation-based GPU renderer, with more information found in section \cref{sec:render-kit}. Since \textit{Pathfinder} uses an implementation of \textit{WebGPU}\footnote{\href{https://www.w3.org/TR/webgpu/}{https://www.w3.org/TR/webgpu/}}, it is portable and may compile to Web Assembly (WASM)\footnote{\href{https://webassembly.org/}{https://webassembly.org/}} as a hardware-accelerated web target, making this a practical candidate runtime for web browsers. WebGPU is developed by the \textit{W3C GPU for the Web Community Group} with engineers from Apple, Mozilla, Microsoft, Google, and others\cite{WebGPU}, such to extend hardware acceleration to the respective company's web browsers. \textit{Pathfinder} also uses minimal GPU features, namely a storage buffer for caching and multi-sample anti-aliasing.
 
-\subparagraph{Pathfinder} Our last renderer for instrumentation is Pathfinder, with additional details found in section \cref{sec:Pathfinder}. \textit{Pathfinder} was engineered for work in Servo, an embedded web engine project. \textit{Pathfinder} offers an analytic approach to GPU-centric rendering, defended academically and publicly\cite{Walton18}. Pathfinder, as an interpreted model (\cref{sec:interpreted_models}), would provide a stark contrast to a tessellation-based model such as Render-Kit, or a heavily optimized CPU-based approach such as \textit{resvg}.
+\subparagraph{Pathfinder} Our last renderer for instrumentation is Pathfinder, with additional details found in section \cref{sec:Pathfinder}. \textit{Pathfinder} was engineered for work in Servo, an embedded web engine project. \textit{Pathfinder} offers an analytic approach to GPU-centric rendering, defended academically and publicly\cite{Walton18}. Pathfinder, as a parallel model\footnote{See \cref{sec:parallel_models}}, would provide a stark contrast to a tessellation-based model such as Render-Kit, or a heavily optimized CPU-based approach such as \textit{resvg}.
 
 \subsection{Data Collection}
 Data collected from the benchmarks in section \cref{sec:benchmarks} are given here. A discussion of these results may be found in the following section, \cref{sec:discussion}.
@@ -468,7 +468,7 @@ Second&Idle&Interrupt&Nice&System&User\\
 
 
 \subsection{Test Case Analysis}
-This section interprets the several benchmarks and data collected in the results above. Precisely, we will interpret findings from our analysis questions regarding our test case.\medskip
+This section interprets the several benchmarks and data collected in the results above. Precisely, we will frame findings in the context of our analysis questions in the test case.\medskip
 
 \subsubsection{Consequences of tessellation}
 In our questions for analysis, we asked ``What are some consequences of tessellation?''. Below we will explain our findings for this query.\medskip
