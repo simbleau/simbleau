@@ -1,5 +1,6 @@
 \appendix
-\addcontentsline{toc}{section}{Appendix}\label{sec:appendix}
+\addcontentsline{toc}{chapter}{Appendix}\label{sec:appendix}
+\renewcommand{\thesection}{\Alph{section}}
 
 \section{Methodology for \cref{tab:impossible_cubes_stats}}
 \label{appendix:svg_vs_png}
@@ -21,7 +22,7 @@ Upscaled dimensions are modified through the \code{-w} and \code{-h} options. Fi
 
 \section{Methodology for \cref{fig:ghostscript_overdraw}}
 \label{appendix:overdraw}
-There are many ways to simulate an image without occlusion culling. The first option is to use the blending hardware; when rendering geometry with any GPU API, specify the "add" blending operator and render ``1'' into the target. The target will result in a map containing the number of writes per pixel. Afterward, one can then take that as input of another shader that translates that number into a color that is easy to see.\medskip
+There are many ways to simulate an image without occlusion culling. The first option is to use the blending hardware; when rendering geometry with any GPU API, specify the ``add'' blending operator and render ``1'' into the target. The target will result in a map containing the number of writes per pixel. Afterward, one can then take that as input of another shader that translates that number into a color that is easy to see.\medskip
 
 That being said, we took a rudimentary approach, as detail was not imperative. We took an \textit{svg}, ``GhostScript\_Tiger.svg'', and ungrouped all paths in \textit{Inkscape}. We then selected all paths and modified the opacity to \(0.2\) and the fill color to white. This process is shown in \cref{fig:overdraw_appendix}.\medskip
 

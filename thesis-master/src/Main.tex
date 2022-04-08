@@ -3,9 +3,12 @@
 % Thesis Source
 % Appalachian State University
 
-\documentclass[12pt]{article}
+\documentclass[12pt]{report}
 \usepackage[utf8]{inputenc}
+
+% For Citations
 \usepackage{cite}
+
 \usepackage[toc]{appendix}
 % For embedding SVGs in TeX!
 \usepackage{svg}
@@ -15,26 +18,16 @@
 \usepackage[export]{adjustbox}
 \fboxsep=2mm%padding thickness
 \usepackage{stackengine}
+% For using double spacing in the front matter
+\usepackage{setspace}
 % For clickable and colorable hyperlinks
 \usepackage{xcolor}
 \usepackage{hyperref}
-\hypersetup{
-  colorlinks=false,
-}
 % For multiple columns
 \usepackage{multicol}
-% For floating figures
+% privides the H option for floats
 \usepackage{float}
-% For the adjusting the width environment (paragraph indents)
-\usepackage{changepage}
-% For custom table of contents lists
-\usepackage{tocloft}
-\newlistof{equations}{equ}{\listequationsname} % Equation List in TOC
-% For § symbols and such when referencing sections.
-\usepackage{cleveref}
-% Use Minted for syntax highlighting and code examples.
-\usepackage{minted}
-% For making new figures
+% For making new figures, code examples
 \usepackage{newfloat}
 % Declare a custom list, list of code examples
 \DeclareFloatingEnvironment[
@@ -43,34 +36,80 @@
     name={Code Example},
     placement=H,
 ]{snippet}
+% For the adjusting the width environment (paragraph indents)
+\usepackage{changepage}
+% For custom table of contents lists
+\usepackage{tocloft}
+% For § symbols and such when referencing sections.
+\usepackage{cleveref}
+% Use Minted for syntax highlighting and code examples.
+\usepackage{minted}
 
-% Section Formatting
-\crefformat{section}{\S#2#1#3} % see manual of cleveref, section 8.2.1
-\crefformat{subsection}{\S#2#1#3}
-\crefformat{subsubsection}{\S#2#1#3}
-\crefformat{paragraph}{\S#2#1#3}
-\crefformat{snippet}{code ex. #1}
-\crefformat{appendix}{appendix #1}
-\setcounter{secnumdepth}{4}
+% LINK FORMATTING
+\hypersetup{
+	%linktocpage,
+    colorlinks,
+    %citecolor=black,
+    %filecolor=black,
+    %linkcolor=black,
+    %urlcolor=black,
+}
 
-% Formatting
-\newcommand{\code}[1]{\mintinline{rust}{#1}}
+% SECTION FORMATTING
+% see manual of cleveref, section 8.2.1
+\crefformat{chapter}{Chapter #1}
+\crefformat{section}{Section \S#2#1#3}
+\crefformat{subsection}{Subsection \S#2#1#3}
+\crefformat{subsubsection}{Subsection \S#2#1#3}
+\crefformat{paragraph}{Subsection \S#2#1#3}
+\crefformat{snippet}{Code Example #1}
+\crefformat{appendix}{Appendix #1}
+\crefformat{figure}{Figure #1}
+\crefformat{table}{Table #1}
+\crefformat{equation}{Equation #1}
+
+% FORMATTING
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{2}
+
+%  MARGINS
+\setlength{\voffset}{0in}
+\setlength{\hoffset}{0.25in}
+\setlength{\textheight}{\paperheight}
+\setlength{\textwidth}{\paperwidth}
+\addtolength{\textheight}{-2in}
+\setlength{\topmargin}{0in}
+\setlength{\headsep}{0in}
+\setlength{\footskip}{.5in}
+\setlength{\headheight}{0in}
+\setlength{\textwidth}{6.25in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+
+% PARAGRAPH
+\setlength{\parindent}{0.5in}
+\setlength{\marginparwidth}{0in}
+\setlength{\marginparsep}{0in}
+\setlength{\marginparpush}{0in}
+
+% \flushbottom
+
+% CONFIGURATION
+\newcommand{\thesistitle}{UNDERSTANDING HARDWARE-ACCELERATED 2D VECTOR GRAPHICS}
+\newcommand{\graduationdate}{May 2022}
+
+\newcommand{\toolname}{\textit{vgpu-bench}}
+\newcommand{\toolslug}{vgpu-bench}
+\newcommand{\toolrepo}{\href{https://github.com/simbleau/\toolslug}{https://github.com/simbleau/\toolslug}}
+\newcommand{\thesisrepo}{\href{https://github.com/simbleau/simbleau/tree/research/thesis-master}{https://github.com/simbleau/simbleau/tree/research/thesis-master}}
+
+% COMMANDS
+\newcommand{\code}[1]{\mintinline[breaklines]{text}{#1}}
 \newcommand{\todo}[1]{\textcolor{red}{TODO: {#1}}}
 \newcommand{\tocequation}[1]{%
 \addcontentsline{equ}{equations}{\protect\numberline{\theequation}#1}\par}
 \newcommand{\tocsnippet}[1]{%
 \addcontentsline{cod}{snippets}{\protect\numberline{\theequation}#1}\par}
-
-% Vocabulary
-\newcommand{\listequationsname}{List of Equations}
-\newcommand{\listsnippetsname}{List of Code Examples}
-\newcommand{\thesistitle}{Understanding 2D Vector Graphics on GPUs}
-\newcommand{\thesisrepo}{\href{hhttps://github.com/simbleau/simbleau/tree/research/thesis-master}{https://github.com/simbleau/simbleau/tree/research/thesis-master}}
-\newcommand{\toollinkedname}{\href{https://github.com/simbleau/\toolname}{\toolname}}
-\newcommand{\toolrepo}{\href{https://github.com/simbleau/\toolname}{https://github.com/simbleau/\toolname}}
-\newcommand{\toolname}{vgpu-bench}
-
-% Custom commands
 % The size dimensions of all SVG figures! This is changeable!
 \newdimen\mywidth \newdimen\myheight
 \mywidth=\linewidth
@@ -79,73 +118,73 @@
 \newcommand{\widesvg}[3]{
     \begin{figure}[H]
     \centering
-    \underline{
-        \includesvg[width=\linewidth, height=7in, keepaspectratio]{#1}
-    }\\
-    \scriptsize Source: #3 % Attribution required by CC
-    \caption{#2}
+    \includesvg[width=\linewidth, height=7in, keepaspectratio]{#1}
+    \caption{#2\protect\footnotemark} % Attribution required by CC
     \end{figure}
+    \footnotetext{attribution: #3}
 }
 \newcommand{\svg}[3]{
     \begin{figure}[H]
     \centering
-    \underline{
-        \includesvg[width=.67\mywidth, height=.67\myheight, keepaspectratio]{#1}
-    }\\
-    \scriptsize Source: #3 % Attribution required by CC
-    \caption{#2}
+    \includesvg[width=.7\linewidth, height=4.5in, keepaspectratio]{#1}
+    \caption{#2\protect\footnotemark} % Attribution required by CC
     \end{figure}
+    \footnotetext{attribution: #3}
 }
 \newcommand{\smallsvg}[3]{
     \begin{figure}[H]
     \centering
-    \underline{
-        \includesvg[width=.4\mywidth, height=.4\myheight, keepaspectratio]{#1}
-    }\\
-    \scriptsize Source: #3 % Attribution required by CC
-    \caption{#2}
+    \includesvg[width=.4\linewidth, height=3in, keepaspectratio]{#1}
+    \caption{#2\protect\footnotemark} % Attribution required by CC
     \end{figure}
+    \footnotetext{attribution: #3}
 }
 
 % Start document
 \begin{document}
 
-% Turn off page numbering
-\pagenumbering{gobble}
-% Cover
-\include{Cover}
-\include{Approval}
-\include{Copyright}
-% Turn on roman page numbering
-\pagenumbering{roman}
+% FRONT MATTER
+\pagenumbering{gobble} % Turn off page numbering
+\include{front_matter/cover}
+\newpage
+\include{front_matter/signatures}
+\newpage
+\include{front_matter/copyright}
+\pagenumbering{roman} % Turn on roman page numbering
 \setcounter{page}{1}
-% Preface Sections
-\input{Abstract}
-\clearpage
-\input{Acknowledgements}
-\clearpage
-\input{Preface}
-\clearpage
-\input{TOC}
-\input{LOT}
-\input{LOF}
-\input{LOE}
-\input{LOC}
-% Turn on arabic page numbering and reset count
+\newpage
+\input{front_matter/abstract}
+\newpage
+\input{front_matter/acknowledgements}
+\newpage
+\input{front_matter/preface}
+\newpage
+\input{front_matter/toc}
+
+% CHAPTERS
 \pagenumbering{arabic}
 \setcounter{page}{1}
-% Sections
-\input{Background}
-\input{Introduction}
-\input{Literature}
-\input{Theory}
-\input{Methodology}
-\input{Results}
-\input{Discussion}
-\input{Conclusion}
-% Bibliography
-\include{Bibliography}
-% Appendix
-\include{Appendix}
+\newpage
+\input{chapters/Introduction}
+\newpage
+\input{chapters/Background}
+\newpage
+\input{chapters/Literature}
+\newpage
+\input{chapters/Theory}
+\newpage
+\input{chapters/Methodology}
+\newpage
+\input{chapters/Results}
+\newpage
+\input{chapters/Discussion}
+\newpage
+\input{chapters/Conclusion}
+
+% BACK MATTER
+\newpage
+\include{back_matter/Bibliography}
+\newpage
+\include{back_matter/Appendix}
 
 \end{document}

@@ -1,24 +1,24 @@
-\section{Results}\label{sec:results}
-As a method of verification of our work, we ask ``\textit{Are we building our framework right?}''. One way to verify our framework is to use it in a test trial and proving through construction. Therefore, we will offer a test trial to prove our framework's concept, design, and resourcefulness. We will then discuss the results in the following discussion section.
+\chapter{Results}\label{sec:results}
+As a method of verification of our work, we ask ``\textit{Are we building our framework right?}.'' One way to verify our framework is to use it in a test trial and thereby prove through construction. Therefore, we will offer a test trial to prove our framework's concept, design, and resourcefulness. We will then discuss the results in the following discussion section.
 
-\subsection{Test Case}\label{sec:test_case}
-We have chosen to verify our framework through use in a test trial. This trial to prove our framework's concept, design, and resourcefulness.
+\section{Test Case}\label{sec:test_case}
+This section describes the test case scenario, poses analysis questions, and describes the benchmarks performed with data used.
 
-\subsubsection{The ``web browser'' case}\label{sec:web_browser_case}
-Web browsers are the poster child for advancing vector graphics because of how ubiquitously used the browser technology is. Currently, Skia, discussed in section \cref{sec:skia}, is the graphics library that is used in modern web browsers. There is significant ongoing development that goes into optimizing web image rendering, given the empirical consequences. While formats such as SVG are generally smaller and faster to travel over the net in web pages (\cref{sec:storage_savings}), a slow rendering speed negates these benefits.\medskip
+\subsection{The ``Web Browser'' Case}\label{sec:web_browser_case}
+Web browsers are a deserving application for vector graphic analysis because of how ubiquitously used the browser technology is. Currently, Skia, discussed in \cref{sec:skia}, is the graphics library that is used in modern web browsers. There is significant ongoing development that goes into optimizing web image rendering, given the empirical consequences. While formats such as SVG are generally smaller and faster to travel over the net in web pages\footnote{see: \cref{sec:storage_savings}}, a slow rendering speed negates these benefits.\medskip
 
 Our test trial will analyze a classic user story of vector graphics: static \textit{svg} content rendering. We will quantify the use of tessellation by rendering static graphics against three renderers which test if a pre-computation model such as tessellation may have usefulness in such a case.
 
-\subsubsection{Questions for analysis}
-We provide several questions that \toollinkedname will utilize to pilot our test case.
+\subsection{Questions for Analysis}
+We provide several questions that \toolname will utilize to pilot our test case.
 \begin{itemize}
     \item What are some consequences of tessellation?
     \item What are some consequences of a pre-computation model?
     \item Can hardware acceleration improve performance?
 \end{itemize}
 
-\subsubsection{Benchmarks}\label{sec:benchmarks}
-We have coded several benchmarks using the \toollinkedname library to answer the above-mentioned questions. All benchmark source code in the ``thesis'' branches of the \toollinkedname repository\footnote{\toolrepo}, however results are taken from varying development stages of \toollinkedname, so our \textit{examples} on \textit{master}\footnote{\href{https://github.com/simbleau/vgpu-bench/tree/main/examples}{https://github.com/simbleau/vgpu-bench/tree/main/examples}} may provide the forward reader better content examples.
+\subsection{Benchmarks}\label{sec:benchmarks}
+We have coded several benchmarks using the \toolname library to answer the above-mentioned questions. All benchmark source code in the ``thesis'' branches of the \toolname repository\footnote{see: \toolrepo}, however results are taken from varying development stages of \toolname, so our examples on the ``master'' branch\footnote{see: \href{https://github.com/simbleau/vgpu-bench/tree/main/examples}{https://github.com/simbleau/vgpu-bench/tree/main/examples}} may provide the forward reader better content examples.
 
 \begin{itemize}
 % Profiling
@@ -33,14 +33,14 @@ We have coded several benchmarks using the \toollinkedname library to answer the
     \item CPU Utilization of a complex example
 \end{itemize}
 
-\subsubsection{Instrumentation}
+\subsection{Instrumentation}
 Below we provide justifications for our test data, tessellation backend, and rendering backends.
 
-\paragraph{Hardware}
+\subsubsection{Hardware}
 Unless otherwise specified, all GPU benchmarks are recorded with an NVIDIA\copyright \textit{GeForce 1060 3GB}, a middle-grade desktop-class GPU released in 2016.\medskip
 
-\paragraph{Test data}
-We use practical examples with varying complexity for a test set of vector graphics, supplemented with dynamically generated examples. Our dynamic examples have varying amounts of rotated primitives at a constant scale, generated with \textit{svg-generator} (\cref{sec:svg-generator}) to more consistently assess scalability.\medskip
+\subsubsection{Test data}
+We use practical examples with varying complexity for a test set of vector graphics, supplemented with dynamically generated examples. Our dynamic examples have varying amounts of rotated primitives at a constant scale, generated with \textit{svg-generator}\footnote{see: \cref{sec:svg-generator}} to more consistently assess scalability.\medskip
 
 In \cref{fig:vg_examples} we present five images that are practical in complexity and encountered naturally on the web. These images were chosen to represent assets such as logos, icons, and designs. Such images are purposed to represent the organic complexity of generalized vector graphics.\medskip
  
@@ -62,26 +62,26 @@ We also acknowledge that the web has apps that may utilize more paths and data t
 % Attribution
 {By Spencer C. Imbleau, MIT/Apache 2.0}
 
-\paragraph{Tessellation}\label{sec:instrumentation_tessellator} In all benchmarks involving tessellation, \textit{Lyon}\footnote{\href{https://github.com/nical/lyon}{https://github.com/nical/lyon}} will be used as a backend library, given its academic profile\cite{Silva18}, performance\cite{Lyon_Sweep}, and modern application (\cref{sec:lyon_lit}). We will use a tolerance of \(0.1\) in all aspects where needed, which is a subjectively okay approximation.\medskip
+\subsubsection{Tessellation}\label{sec:instrumentation_tessellator} In all benchmarks involving tessellation, \textit{Lyon}\footnote{see: \href{https://github.com/nical/lyon}{https://github.com/nical/lyon}} will be used as a backend library, given its academic profile\cite{Silva18}, performance\cite{Lyon_Sweep}, and modern application\footnote{see: \cref{sec:lyon_lit}}. We will use a tolerance of \(0.1\) in all aspects where needed, which is a subjectively okay approximation.\medskip
 
-\paragraph{Rendering}\label{sec:instrumentation_renderers} We will use three backend renderers to render all the provided test data above at the same scale and resolution. The first of which is \textit{resvg}\footnote{\href{https://github.com/RazrFalcon/resvg}{https://github.com/RazrFalcon/resvg}}, an optimized CPU-based renderer paralleling Skia. Secondly, we use \textit{Pathfinder}\footnote{\href{https://github.com/servo/pathfinder}{https://github.com/servo/pathfinder}}, a compute-centric sophisticated hardware-accelerated rendering library. Finally we use \textit{render-kit}'s own renderer (\cref{sec:render-kit}) as a tessellation-based renderer. Additional reasons and justifications may be found below, such that we may draw apt comparisons from varying rendering approaches.
+\subsubsection{Rendering}\label{sec:instrumentation_renderers} We will use three backend renderers to render all the provided test data above at the same scale and resolution. The first of which is \textit{resvg}\footnote{see: \href{https://github.com/RazrFalcon/resvg}{https://github.com/RazrFalcon/resvg}}, an optimized CPU-based renderer paralleling Skia. Secondly, we use \textit{Pathfinder}\footnote{see: \href{https://github.com/servo/pathfinder}{https://github.com/servo/pathfinder}}, a compute-centric sophisticated hardware-accelerated rendering library. Finally we use \textit{render-kit}'s own renderer\footnote{see: \cref{sec:render-kit}} as a tessellation-based renderer. Additional reasons and justifications may be found below, such that we may draw apt comparisons from varying rendering approaches.
 
-\subparagraph{resvg} We have chosen \textit{resvg} because it is an abstraction over Skia\footnote{\href{https://skia.org}{https://skia.org}}, closely paralleling the optimization. Using a small subset of bindings from CPU-based Skia rendering, donned tiny-skia\footnote{\href{https://github.com/RazrFalcon/tiny-skia}{https://github.com/RazrFalcon/tiny-skia}}, tiny-skia is about 20-100\% less efficient than Skia\footnote{\href{https://razrfalcon.github.io/tiny-skia/x86_64.html}{https://razrfalcon.github.io/tiny-skia/x86\_64.html}}. Despite using no GPU features, \textit{resvg} is still one of the fastest CPU-based renderers for \textit{svg} images. We will also ignore any caching potential and produce every image as a dry run to provide optics on how beneficial caching may be.
+\paragraph{resvg} We have chosen \textit{resvg} because it is an abstraction over Skia\footnote{see: \href{https://skia.org}{https://skia.org}}, closely paralleling the optimization. Using a small subset of bindings from CPU-based Skia rendering, donned tiny-skia\footnote{see: \href{https://github.com/RazrFalcon/tiny-skia}{https://github.com/RazrFalcon/tiny-skia}}, tiny-skia is about 20-100\% less efficient than Skia\footnote{see: \href{https://razrfalcon.github.io/tiny-skia/x86_64.html}{https://razrfalcon.github.io/tiny-skia/x86\_64.html}}. Despite using no GPU features, \textit{resvg} is still one of the fastest CPU-based renderers for \textit{svg} images. We will also ignore any caching potential and produce every image as a dry run to provide optics on how beneficial caching may be.
 
-\subparagraph{Render-Kit} As a feature of \toollinkedname, the ``\textit{render-kit}'' feature provides a minimal tessellation-based GPU renderer, with more information found in section \cref{sec:render-kit}. Since \textit{Pathfinder} uses an implementation of \textit{WebGPU}\footnote{\href{https://www.w3.org/TR/webgpu/}{https://www.w3.org/TR/webgpu/}}, it is portable and may compile to Web Assembly (WASM)\footnote{\href{https://webassembly.org/}{https://webassembly.org/}} as a hardware-accelerated web target, making this a practical candidate runtime for web browsers. WebGPU is developed by the \textit{W3C GPU for the Web Community Group} with engineers from Apple, Mozilla, Microsoft, Google, and others\cite{WebGPU}, such to extend hardware acceleration to the respective company's web browsers. \textit{Pathfinder} also uses minimal GPU features, namely a storage buffer for caching and multi-sample anti-aliasing.
+\paragraph{Render-Kit} As a feature of \toolname, the ``\textit{render-kit}'' feature provides a minimal tessellation-based GPU renderer described in \cref{sec:render-kit}. Since \textit{Pathfinder} uses an implementation of \textit{WebGPU}\footnote{see: \href{https://www.w3.org/TR/webgpu/}{https://www.w3.org/TR/webgpu/}}, it is portable and may compile to Web Assembly (WASM)\footnote{see: \href{https://webassembly.org/}{https://webassembly.org/}} as a hardware-accelerated web target, making this a practical candidate runtime for web browsers. WebGPU is developed by the \textit{W3C GPU for the Web Community Group} with engineers from Apple, Mozilla, Microsoft, Google, and others\cite{WebGPU}, such to extend hardware acceleration to the respective company's web browsers. \textit{Pathfinder} also uses minimal GPU features, namely a storage buffer for caching and multi-sample anti-aliasing.
 
-\subparagraph{Pathfinder} Our last renderer for instrumentation is Pathfinder, with additional details found in section \cref{sec:Pathfinder}. \textit{Pathfinder} was engineered for work in Servo, an embedded web engine project. \textit{Pathfinder} offers an analytic approach to GPU-centric rendering, defended academically and publicly\cite{Walton18}. Pathfinder, as a parallel model\footnote{See \cref{sec:parallel_models}}, would provide a stark contrast to a tessellation-based model such as Render-Kit, or a heavily optimized CPU-based approach such as \textit{resvg}.
+\paragraph{Pathfinder} Our last renderer for instrumentation is Pathfinder, with examination in \cref{sec:Pathfinder}. \textit{Pathfinder} was engineered for work in Servo, an embedded web engine project. \textit{Pathfinder} offers an analytic approach to GPU-centric rendering, defended academically and publicly\cite{Walton18}. Pathfinder, as a parallel model\footnote{see: \cref{sec:parallel_models}}, would provide a stark contrast to a tessellation-based model such as Render-Kit, or a heavily optimized CPU-based approach such as \textit{resvg}.
 
-\subsection{Data Collection}
-Data collected from the benchmarks in section \cref{sec:benchmarks} are given here. A discussion of these results may be found in the following section, \cref{sec:discussion}.
+\section{Data Collection}
+Data collected from the benchmarks in \cref{sec:benchmarks} are given here. A discussion of these results will be found our discussion, \cref{sec:discussion}.
 
-\subsubsection{Profiling}\label{sec:results_profiling}
+\subsection{Profiling}\label{sec:results_profiling}
 % =========
 % PROFILING
 % =========
 Results in this section are designed to profile several \textit{svg} images to classify images into a frame of reference for complexity.
 
-\paragraph{SVG "True" Complexity}
+\subsubsection{SVG complexity}
 In \cref{fig:complexity_svg} below, we plot data corresponding to the amount of path commands in each respective \textit{svg} image. Files are located on the x-axis. The volume of path commands in the respective file is plotted on the y-axis.\medskip
 
 \widesvg
@@ -92,7 +92,7 @@ In \cref{fig:complexity_svg} below, we plot data corresponding to the amount of 
 % Attribution
 {By Spencer C. Imbleau, MIT/Apache 2.0}\medskip
 
-\paragraph{SVG Tessellation Complexity}
+\subsubsection{SVG tessellation complexity}
 In \cref{fig:complexity_tess} below, we plot data corresponding to the amount of output triangles for each respective \textit{svg} image after tessellation. Files are located on the x-axis. The volume of triangles produced in the respective file is plotted on the y-axis.\medskip
 
 \widesvg
@@ -104,13 +104,13 @@ In \cref{fig:complexity_tess} below, we plot data corresponding to the amount of
 {By Spencer C. Imbleau, MIT/Apache 2.0}
 
 
-\subsubsection{Tessellation}\label{sec:results_tessellation}
+\subsection{Tessellation}\label{sec:results_tessellation}
 % ===================
 % TESSELLATION TIMING
 % ===================
-Results in this section are designed to collect time trials relating to tessellation to understand more about the consequences of tessellation using our instrumentation tessellator (\cref{sec:instrumentation_tessellator}).
+Results in this section are designed to collect time trials relating to tessellation to understand more about the consequences of tessellation using our instrumentation tessellator, \textit{Lyon}.
 
-\paragraph{Low primitive count}
+\subsubsection{Low primitive count}
 % =========================
 % TESSELLATION TIMING - LOW
 % =========================
@@ -141,7 +141,7 @@ In \cref{fig:less_triangle}, \cref{fig:less_quadratic_curve}, and \cref{fig:less
 {By Spencer C. Imbleau, MIT/Apache 2.0}
 
 
-\paragraph{High primitive count}
+\subsubsection{High primitive count}
 % ==========================
 % TESSELLATION TIMING - HIGH
 % ==========================
@@ -172,13 +172,13 @@ In \cref{fig:more_triangle}, \cref{fig:more_quadratic_curve}, and \cref{fig:more
 {By Spencer C. Imbleau, MIT/Apache 2.0}
 
 
-\subsubsection{Rendering Trials}\label{sec:results_rendering}
+\subsection{Rendering Trials}\label{sec:results_rendering}
 % ================
 % RENDERING TRIALS
 % ================
-Results in this section are designed to collect time trials relating to rendering to understand more about the the performance of the differing renderers we use for instrumentation in section \cref{sec:instrumentation_renderers}.
+Results in this section are designed to collect time trials relating to rendering to understand more about the the performance of the differing renderers we use for instrumentation in \cref{sec:instrumentation_renderers}. We do so by benchmarking dry frametimes, which are frametimes without any former computation, and wet frametimes, which may be accelerated through caching or initial processing.
 
-\paragraph{Dry frametime for test data}
+\subsubsection{Dry frametime for test data}
 % ======================
 % FIRST FRAME TIME - ALL
 % ======================
@@ -219,11 +219,11 @@ NASA.svg&110.726647ms\\
 \hline
 File&Frametime\\
 \hline
-ASU.svg&845.686µs\\
+ASU.svg&0.845686ms\\
 \hline
 Ferris.svg&2.819766ms\\
 \hline
-Flag\_of\_Denmark.svg&149.882µs\\
+Flag\_of\_Denmark.svg&0.149882ms\\
 \hline
 Ghostscript\_Tiger.svg&5.847163ms\\
 \hline
@@ -261,7 +261,7 @@ NASA.svg&5.456171ms\\
 \caption{Dry frametime rendering for test data images with \textit{Pathfinder}.\label{tab:first_frame_pathfinder}}
 \end{table}
 
-\paragraph{Wet frametimes for test data}\label{sec:wet_frametimes}
+\subsubsection{Wet frametimes for test data}\label{sec:wet_frametimes}
 % =====================
 % WET FRAME TIMES - ALL
 % =====================
@@ -291,11 +291,11 @@ In \cref{fig:wet_all_renderkit}, \cref{fig:wet_all_resvg}, and \cref{fig:wet_all
 % Attribution
 {By Spencer C. Imbleau, MIT/Apache 2.0}
 
-\paragraph{Wet frametimes for a simple image}
+\subsubsection{Wet frametimes for a simple image}
 % ======================
 % WET FRAME TIMES - FLAG
 % =======================
-In \cref{fig:wet_flag_renderkit}, \cref{fig:wet_flag_resvg}, and \cref{fig:wet_flag_pathfinder}, we plot the frametimes of our most simple item of test data, ``\textit{Flag\_of\_Denmark.svg}''. Frames are measured by continuously rendering \emph{after} setup steps such as tessellation, staging, or initialization. The frame rendered is recorded on the x-axis. The total time expense of rendering is recorded on the y-axis.\medskip
+In \cref{fig:wet_flag_renderkit}, \cref{fig:wet_flag_resvg}, and \cref{fig:wet_flag_pathfinder}, we plot the frametimes of our most simple item of test data, ``\textit{Flag\_of\_Denmark.svg}.'' Frames are measured by continuously rendering \emph{after} setup steps such as tessellation, staging, or initialization. The frame rendered is recorded on the x-axis. The total time expense of rendering is recorded on the y-axis.\medskip
 
 \widesvg
 % Path
@@ -322,11 +322,11 @@ In \cref{fig:wet_flag_renderkit}, \cref{fig:wet_flag_resvg}, and \cref{fig:wet_f
 {By Spencer C. Imbleau, MIT/Apache 2.0}
 
 
-\paragraph{Wet frametimes for a complex image}
+\subsubsection{Wet frametimes for a complex image}
 % =====================
 % WET FRAME TIMES - MAP
 % =====================
-In \cref{fig:wet_map_renderkit}, \cref{fig:wet_map_resvg}, and \cref{fig:wet_map_pathfinder}, we plot the frametimes of our most complex item of test data, ``\textit{København\_512.svg}''. Frames are measured by continuously rendering \emph{after} setup steps such as tessellation, staging, or initialization. The frame rendered is recorded on the x-axis. The total time expense of rendering is recorded on the y-axis.\medskip
+In \cref{fig:wet_map_renderkit}, \cref{fig:wet_map_resvg}, and \cref{fig:wet_map_pathfinder}, we plot the frametimes of our most complex item of test data, ``\textit{København\_512.svg}.'' Frames are measured by continuously rendering \emph{after} setup steps such as tessellation, staging, or initialization. The frame rendered is recorded on the x-axis. The total time expense of rendering is recorded on the y-axis.\medskip
 
 \widesvg
 % Path
@@ -353,13 +353,13 @@ In \cref{fig:wet_map_renderkit}, \cref{fig:wet_map_resvg}, and \cref{fig:wet_map
 {By Spencer C. Imbleau, MIT/Apache 2.0}\medskip
 
 
-\subsubsection{Monitoring}\label{sec:results_monitoring}
+\subsection{Monitoring}\label{sec:results_monitoring}
 % ===============================
 % CPU UTILIZATION - KØBENHAVN_512
 % ===============================
 Results in this section are designed to monitor consequences incurred by a file with a heavy resource footprint.\medskip
 
-In \cref{tab:wet_map_renderkit}, \cref{tab:wet_map_resvg}, and \cref{tab:wet_map_pathfinder}, we record the cpu utilization for ten seconds while rendering our most complex item of test data, ``\textit{København\_512.svg}''. The process responsible for rendering is initiated by a user.\medskip
+In \cref{tab:wet_map_renderkit}, \cref{tab:wet_map_resvg}, and \cref{tab:wet_map_pathfinder}, we record the cpu utilization for ten seconds while rendering our most complex item of test data, ``\textit{København\_512.svg}.'' The process responsible for rendering is initiated by a user.\medskip
 
 % Render-Kit
 \begin{table}[H]
@@ -467,19 +467,19 @@ Second&Idle&Interrupt&Nice&System&User\\
 %===================
 
 
-\subsection{Test Case Analysis}
+\section{Test Case Analysis}
 This section interprets the several benchmarks and data collected in the results above. Precisely, we will frame findings in the context of our analysis questions in the test case.\medskip
 
-\subsubsection{Consequences of tessellation}
-In our questions for analysis, we asked ``What are some consequences of tessellation?''. Below we will explain our findings for this query.\medskip
+\subsection{Consequences of Tessellation}
+In our questions for analysis, we asked ``What are some consequences of tessellation?.'' Below we will explain our findings for this query.\medskip
 
-\paragraph{Primitive count} Tessellation does not always output more complexity than the original vector image. In the example of ``\textit{Flag\_of\_Denmark.svg}'' in our profiling results (\cref{sec:results_profiling}) we notice the original file contains 18 path commands, and the tessellation outputs 12 triangles. This intuitively makes sense, as the flag may be represented with two triangles for each rectangle, with the flag being able to be described as six rectangles.
+\subsubsection{Primitive count} Tessellation does not always output more complexity than the original vector image. In the example of ``\textit{Flag\_of\_Denmark.svg}'' in our profiling results\footnote{see: \cref{sec:results_profiling}} we notice the original file contains 18 path commands, and the tessellation outputs 12 triangles. This intuitively makes sense, as the flag may be represented with two triangles for each rectangle, with the flag being able to be described as six rectangles.
 
-\paragraph{Tolerance} One may point out that ``\textit{Ferris.svg}'' has far less path commands than ``\textit{ASU.svg}'' in their original \textit{svg} files, but produces far more triangles during tessellation. Upon further investigation, this is because of curve flattening and a tolerance, described more in section \cref{sec:tessellation}. ``\textit{ASU.svg}'' has many more paths due to the text ``\textit{Mountaineers}'' over the logo, which are subtracted away during curve flattening simplification, a function of tolerance.
+\subsubsection{Tolerance} One may point out that ``\textit{Ferris.svg}'' has far less path commands than ``\textit{ASU.svg}'' in their original \textit{svg} files, but produces far more triangles during tessellation. Upon further investigation, this is because of curve flattening and a tolerance, described more in \cref{sec:tessellation}. ``\textit{ASU.svg}'' has many more paths due to the text ``\textit{Mountaineers}'' over the logo, which are subtracted away during curve flattening simplification, a function of tolerance.
 
-\paragraph{Tessellation costs} Given an svg with varying amounts of primitives, tessellation costs a lot. If we ignore all initialization cost required to de-serialize an \textit{svg}, which is usually higher than tessellation cost itself according to our results, tessellation is still expensive. Performing a simple linear regression on time residuals gives fairly precise predictions of tessellation time cost as volume of primitives increases. These results suggest that a few thousand primitives will start to incur several milliseconds of cost regardless of type.
+\subsubsection{Tessellation costs} Given an svg with varying amounts of primitives, tessellation costs a lot. If we ignore all initialization cost required to de-serialize an \textit{svg}, which is usually higher than tessellation cost itself according to our results, tessellation is still expensive. Performing a simple linear regression on time residuals gives fairly precise predictions of tessellation time cost as volume of primitives increases. These results suggest that a few thousand primitives will start to incur several milliseconds of cost regardless of type.
 
-\subparagraph{Triangle tessellation cost}
+\paragraph{Triangle tessellation cost}
 \tocequation{Equation of triangle tessellation cost}
 \begin{equation}\label{eq:tesscost_triangle}
 f(x)=0.00044ms*x-0.1022ms
@@ -490,7 +490,7 @@ Correlation: \(r=0.996\)\\
 R-squared:	\(r^2=0.993\)
 \end{center}
 
-\subparagraph{Quadratic Bézier curve tessellation cost}
+\paragraph{Quadratic Bézier curve tessellation cost}
 \tocequation{Equation of quadratic Bézier curve tessellation cost}
 \begin{equation}\label{eq:tesscost_quadratic_bezier}
 f(x)=0.00035ms*x+1.0694ms
@@ -501,7 +501,7 @@ Correlation: \(r=0.998\)\\
 R-squared:	\(r^2=0.997\)
 \end{center}
 
-\subparagraph{Cubic Bézier curve tessellation cost}
+\paragraph{Cubic Bézier curve tessellation cost}
 \tocequation{Equation of cubic Bézier curve tessellation cost}
 \begin{equation}\label{eq:tesscost_cubic_bezier}
 f(x)=0.00039ms*x+3.9174ms
@@ -512,32 +512,32 @@ Correlation: \(r=0.968\)\\
 R-squared:	\(r^2=0.937\)
 \end{center}
 
-\subsubsection{Consequences of pre-computation}
-In our questions for analysis, we asked ``What are the consequences of a pre-computation model?''. Below we will explain our findings for this query.\medskip
+\subsection{Consequences of Pre-Computation}
+In our questions for analysis, we asked ``What are the consequences of a pre-computation model?.'' Below we will explain our findings for this query.\medskip
 
-\paragraph{Cache-friendliness}
+\subsubsection{Cache-friendliness}
 Pre-computation is proven useful in situations where vectors do not have to be deformed or rescaled, such as in the web browser case. Furthermore, Pre-computation may use caching to reduce computation in future rendering iterations. For example, in our benchmarks recording continuous ``dry'' and ``wet'' frametimes, we recorded a single frame turnaround and continuous frametimes for three renderers. Since we did not use any caching features with \textit{resvg}, \textit{resvg}'s dry frametimes are approximately equal to its wet frametimes. On the contrary, render-kit's only GPU feature is a storage buffer binding to tessellation data for computation re-use. This removed the need to re-tessellate per frame, improving the frametime of subsequent frames by a magnitude of 10.
 
-\paragraph{Interactivity} While pre-computation may help to reduce recalculation and improve performance through recycling, the model is anti-thetic to interactivity such as animation or live deformation such as scaling. A reasonable goal is to render an image within \(16ms\), the reciprocal of \(60fps\) (frames per second), a standard convention for interactivity. In our case we only consider static content, so this is not such an issue, but it should be noted that our test case is both narrow and naive for brevity.
+\subsubsection{Interactivity} While pre-computation may help to reduce recalculation and improve performance through recycling, the model is anti-thetic to interactivity such as animation or live deformation such as scaling. A reasonable goal is to render an image within \(16ms\), the reciprocal of \(60fps\) (frames per second), a standard convention for interactivity. In our case we only consider static content, so this is not such an issue, but it should be noted that our test case is both narrow and naive for brevity.
 
-\subsubsection{Hardware-acceleration}
-In our questions for analysis, we asked ``How can hardware-acceleration improve performance?''. Below we will explain our findings for this query.\medskip
+\subsection{Hardware-Acceleration}
+In our questions for analysis, we asked ``How can hardware-acceleration improve performance?.'' Below we will explain our findings for this query.\medskip
 
-\paragraph{GPU latency} Hardware acceleration always brings latency when interacting with the GPU, so in some cases, hardware acceleration is not the magic solution some believe. In elementary vector images with low complexity, \textit{resvg} beat both \textit{Pathfinder} and \textit{Render-Kit} which both leverage the GPU. In the case of \textit{Render-Kit}, there is an nonnegotiable \(110ms\) of submit latency in buffer allocation and transfer required for an initial frame. Viewing the NVTX annotations while running \textit{Pathfinder} provides us with the details to prove this. We have annotated the first frame as ``Strange Behavior'' in NVIDIA\copyright \textit{Nsight Systems}\footnote{\href{https://developer.nvidia.com/nsight-systems}{https://developer.nvidia.com/nsight-systems}} to show this behavior in \cref{fig:strange_behavior}. The metric samples show a build-up to a GPU queue submit, thereby triggering a compute dispatch to commit DRAM for reading subsequent frames.\medskip
+\subsubsection{GPU latency} Hardware acceleration always brings latency when interacting with the GPU, so in some cases, hardware acceleration is not the magic solution some believe. In elementary vector images with low complexity, \textit{resvg} beat both \textit{Pathfinder} and \textit{Render-Kit} which both leverage the GPU. In the case of \textit{Render-Kit}, there is an nonnegotiable \(110ms\) of submit latency in buffer allocation and transfer required for an initial frame. Viewing the NVTX annotations while running \textit{Pathfinder} provides us with the details to prove this. We have annotated the first frame as ``Strange Behavior'' in NVIDIA\copyright \textit{Nsight Systems}\footnote{see: \href{https://developer.nvidia.com/nsight-systems}{https://developer.nvidia.com/nsight-systems}} to show this behavior in \cref{fig:strange_behavior}. The metric samples show a build-up to a GPU queue submit, thereby triggering a compute dispatch to commit DRAM for reading subsequent frames.\medskip
 
 \widesvg
 % Path
 {assets/Nsight_Systems_Renderkit.svg}
 % Caption
-{Initial GPU latency of \textit{Render-Kit}, annotated by \toollinkedname.\label{fig:strange_behavior}}
+{Initial GPU latency of \textit{Render-Kit}, annotated by \toolname.\label{fig:strange_behavior}}
 % Attribution
 {By Spencer C. Imbleau, MIT/Apache 2.0}
 \medskip
 
 Since \textit{Pathfinder} interprets vector graphics mainly through shaders, there is minor caching or pre-computation, and less ceremony is required for an initial frame. However, even with no caching, there still exists an unnegotiable \(2ms\) of GPU latency on our test hardware.
 
-\paragraph{Compute-centricity} \textit{Pathfinder} mollifies historical pipeline rigidity by utilizing compute shaders for parallel winding number computation (\cref{sec:Pathfinder}). This pipeline results in efficient rendering on the GPU in almost all cases, except for elementary ones. Against a traditional raster pipeline, \textit{Render-Kit} provided no competition, with \textit{Pathfinder} being exceptionally better in all cases.\medskip
+\subsubsection{Compute-centricity} \textit{Pathfinder} mollifies historical pipeline rigidity by utilizing compute shaders for parallel winding number computation. This pipeline results in efficient rendering on the GPU in almost all cases, except for elementary ones. Against a traditional raster pipeline, \textit{Render-Kit} provided no competition, with \textit{Pathfinder} being exceptionally better in all cases.\medskip
 
-\paragraph{CPU Utilization} There is also significantly lower CPU utilization monitored with a compute-centric approach, suggesting an intention of increased GPU leveraging and parallelization.
+\subsubsection{CPU Utilization} There is also significantly lower CPU utilization monitored with a compute-centric approach, suggesting an intention of increased GPU leveraging and parallelization.
 
-\paragraph{GPU-caching} Although \textit{resvg} offers one of the most optimized backends for rasterizing vector graphics, the renderer failed to outperform the minimal tessellation-based renderer in \textit{render-kit} by a lack of caching ability.
+\subsubsection{GPU-caching} Although \textit{resvg} offers one of the most optimized backends for rasterizing vector graphics, the renderer failed to outperform the minimal tessellation-based renderer in \textit{render-kit} by a lack of caching ability.

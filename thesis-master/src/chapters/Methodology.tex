@@ -1,0 +1,370 @@
+\chapter{Design and Methodology}\label{sec:methodology}
+Our product, \toolname, is a benchmarking framework for measuring hardware-accelerated vector graphics, emphasizing further analysis. Below we will explain our methodology, steps we take, and justifications for our design decisions. Once we detail our goals and explain our architecture, we validate and verify our analytic framework through a test case to prove by construction.\medskip
+
+\section{Requirements}
+Our analytic framework for hardware-accelerated vector graphics is engineered to be trustworthy and resourceful, establishing results one might naturally cite as evidence. To accomplish this vision, we establish functional and non-functional requirements for \toolname.\medskip
+
+Citing diverse optimization goals in \cref{sec:optimization_goals}, our requirements entertain the hope that our framework should be extensible and capable of rapidly assessing generic axes of interest with concrete evidence. One may hypothesize ``\textit{Where do current vector graphic approaches maximize graphic richness without sacrificing frame rate across a range of hardware and scene complexity?}'' Hence, we present the following requirements for our framework below to answer questions like these and drive a broad set of design goals.\medskip
+
+\subsection{Functional Requirements}
+\begin{itemize}
+	\item The system should be capable of collecting arbitrary measurements.
+	\item The system should be capable of GPU metric sampling.
+	\item The system should be capable of rapid-prototyping.
+	\item The system should provide conveniences such as macros, common trait implementations, and conversions.
+	\item The system should be capable of writing collected measurements.
+	\item The system should be capable of visualizing collected measurements.
+\end{itemize}
+
+\subsection{Non-Functional Requirements}
+\begin{itemize}
+	\item The system should collect measurements accurately with precise timing and synchronization.
+	\item The system should integrate into proprietary software APIs for GPU metric sampling for GPUs within the last five years.
+	\item The system should provide serializers and writers to write measurements.
+	\item The system should provide plotting utilities to visualize measurements.
+	\item The system should encourage adoption through features and pre-written examples, with foreign language interfaces.
+	\item The system should incur no costly consequences with foreign function interfacing.
+\end{itemize}
+
+\section{Architecture}
+
+The architecture of our benchmarking framework was designed in part to accentuate our functional requirements. We chose a design tailored to optimize extensibility and accuracy in a data flow, deriving the concept of containerization. At the highest level, our API orchestrates \emph{drivers}, which are customized runtime executors for \emph{benchmarks}. Benchmarks are containerized function closures that return something discretely \emph{measurable}. Benchmarks also allow augmentation via \emph{monitors}, which poll supplementary measurements at specified frequencies. Measurements are then output by \emph{writers} and \emph{plotters} conveniently for the developer. See \cref{fig:organization} below for a simplified organizational diagram.\medskip
+
+\widesvg
+% Path
+{assets/Organization.svg}
+% Caption
+{A simplified organization of \toolname.\label{fig:organization}}
+% Attribution
+{By Spencer C. Imbleau, MIT/Apache 2.0}
+\medskip
+
+\subsection{Data Flow}
+A driver's runtime will orchestrate the execution of independent benchmark closures sequentially to prevent interference among benchmarks, with resulting measurements collected synchronously. If benchmarks are augmented with monitors, monitors will poll supplemental measurements in parallel during the runtime of a benchmark. Various atomics and barriers synchronize events because of the parallelism at runtime between monitors and benchmarks. After benchmarks are complete, measurements collected by all entities are passed as a bundle to writers and plotters for the archiving of data and visualizations, respectively.\medskip
+
+Below in \cref{fig:sequence}, we present a simplified sequence diagram of the general data flow in \toolname, starting with the \code{Driver}. Note that this diagram is purely supplemental for reference. Refined explanations are presented in the following sections.
+
+\widesvg
+% Path
+{assets/Sequence.svg}
+% Caption
+{The sequencing of \toolname.\label{fig:sequence}}
+% Attribution
+{By Spencer C. Imbleau, MIT/Apache 2.0}
+\medskip
+
+\subsubsection{Measurable}
+One should primarily be acquainted with the \code{Measurable} trait. This trait is the only way to collect data through \toolname. \code{Measurable} is, however, simply a trait alias for the constraints \code{Serialize}\footnote{see: \href{https://docs.serde.rs/serde/trait.Serialize.html}{https://docs.serde.rs/serde/trait.Serialize.html}}, \code{Debug}\footnote{see: \href{https://doc.rust-lang.org/std/fmt/trait.Debug.html}{https://doc.rust-lang.org/std/fmt/trait.Debug.html}}, \code{Send}\footnote{see: \href{https://doc.rust-lang.org/std/marker/trait.Send.html}{https://doc.rust-lang.org/std/marker/trait.Send.html}}, and \code{Sync}\footnote{see: \href{https://doc.rust-lang.org/std/marker/trait.Sync.html}{https://doc.rust-lang.org/std/marker/trait.Sync.html}}. These traits are derivable for every primitive, complex structs, and enums within Rust. Most of what one considers serializable intrinsically could be automatically derived into a \code{Measurable} through macros. Our library provides metaprogramming macros making it trivial to derive this behavior, explained later in a \cref{sec:macros}.
+
+\subsubsection{BenchmarkFn}\label{sec:benchmarkfn}
+Once a developer has something to measure, a benchmark is written in the form of a function closure that returns \code{Measurements}, a data structure that collects \code{Measurable} trait objects. This closure is encapsulated in a \code{BenchmarkFn}, preserving the behavior and measurements, but automatically annotating GPU tracers around the closure, compatible with NVIDIA\copyright's \textit{Tools Extension SDK}, further referred to as \emph{NVTX}. In simpler terms, \code{BenchmarkFn} is synonymous with a function closure with GPU \textit{NVTX} annotations. When a binary executes a \code{BenchmarkFn} through NVIDIA\copyright tools such as NVIDIA\copyright \textit{Nsight Systems}\footnote{see: \href{https://developer.nvidia.com/nsight-systems}{https://developer.nvidia.com/nsight-systems}}, these GPU tracers are observed, making GPU metric sampling and integration trivial for developers.
+
+\subsubsection{Benchmark}
+A \code{Benchmark} is the wrapping data structure which encapsulates a \code{BenchmarkFn}. The parent benchmark struct performs execution of the inner \code{BenchmarkFn} and allows parallel supplemental measurement polling through one or more \code{Monitor} data structures.
+
+\subsubsection{Monitors}
+The \code{Monitor} trait requires a frequency for polling and a function closure that returns something \code{Measurable}. Then, during runtime execution, time-sensitive wake-ups orchestrated by the \code{Benchmark} request the \code{Monitor} to poll and return a measurement. These polled \code{Measurement}s are collected automatically. A \code{Monitor} is a way to extend a benchmark's behavior easily by tacking-on supplemental measurements to record.
+
+\subsubsection{Driver}
+Finally, the \code{Driver} is a runtime executor responsible for one or more \code{Benchmark}s. \code{Driver}s are created through a \code{DriverBuilder} which builds the runtime execution behavior with various options. Options include writing mode, target directory, and others, such as whether to continue on errors.
+
+\subsubsection{Writers and Plotters}
+Writers and plotters are avenues of outputting data in desired formats. A \code{Writer} does exactly what its name implies, write \code{Measurements} to a file, while a \code{Plotter} outputs graphs through foreign function interfacing (\textit{FFI}) to Python's graphing library  \code{matplotlib}. Several plotters are provided for general use cases, such as numeric line graphs, which abstract the difficulty of FFI away from the developer. In general cases, few requirements are imposed on the developer, such as ceremoniously choosing configuration parameters for plotting. One may also ignore these conveniences and plot through one's favorite spreadsheet or data visualization application.
+
+\subsection{Data Sampling}
+Data collection and sampling accuracy are paramount concerns in building a benchmarking framework. The following sections will explain what instrumentation we integrate for GPU metrics and how we guarantee the accuracy for polled CPU metrics.
+
+\subsubsection{GPU Instrumentation}
+We briefly introduced \code{BenchmarkFn} in \cref{sec:benchmarkfn}, where we exposed that each function closure in wrapped in GPU tracer annotations. These tracer annotations are invocations to the NVIDIA\copyright \textit{Tools Extension SDK (NVTX)}\footnote{see: \href{https://docs.nvidia.com/gameworks/content/gameworkslibrary/nvtx/nvidia_tools_extension_library_nvtx.htm}{https://docs.nvidia.com/gamework.../nvtx/nvidia\_tools\_extension\_library\_nvtx.htm}}. \textit{NVTX} performs GPU and CPU profiling for NVIDIA\copyright line hardware through a feature-rich CLI and GUI profiler, which can identify hardware starvation, insufficient parallelization, expensive algorithms, and more. Integrating our analytic framework into \textit{NVTX} is a \emph{necessity}, given NVIDIA\copyright's market share across desktop-grade GPUs.\medskip
+
+\textit{NVTX} provides a C-based API for annotating events, code ranges, and resources in applications. Although it is a C-based API, we can interface the C API in Rust with identical behavior and no overhead through foreign function interfacing (FFI)\cite{Crichton15}. Our library will leverage tracer annotations automatically for the developer across the architecture. We also provide this FFI binding to developers with the respective implementation details elided. This binding allows developers to add additional annotations and markers using our framework without knowledge of \textit{NVTX}. See \cref{code:nvtx} below for example code and \cref{fig:sampling} for the code observed in NVIDIA\copyright \textit{Nsight Systems}\footnote{see: \href{https://developer.nvidia.com/nsight-systems}{https://developer.nvidia.com/nsight-systems}}.
+
+\begin{snippet}
+\caption{\textit{NVTX} markers through macros provided in \toolname.}\label{code:nvtx}
+\begin{minted}{rust}
+use std::{thread, time::Duration};
+use vgpu_bench::prelude::*;
+
+#[measurement]
+struct TessellationMeasurement {
+    tessellation_time: f32,
+}
+
+pub fn main() -> Result<()> {
+    BenchmarkFn::new(|| {
+        let mut measurements = Measurements::new();
+        // Annotating steps of a benchmark...
+        nvtx::mark!("Step 1 - Begin");
+        thread::sleep(Duration::from_secs_f32(0.5));
+        measurements.push(TessellationMeasurement {
+            tessellation_time: 0.5,
+        });
+        nvtx::mark!("Step 2 - Begin");
+        thread::sleep(Duration::from_secs_f32(0.35));
+        measurements.push(TessellationMeasurement {
+            tessellation_time: 0.35,
+        });
+        // Benchmarking done!
+        Ok(measurements)
+    })
+    .run("Benchmark Test")?;
+
+    Ok(())
+}
+\end{minted}
+\end{snippet}
+
+\widesvg
+% Path
+{assets/Nsight_Systems.svg}
+% Caption
+{\textit{NVTX} annotations observed in \cref{code:nvtx}.\label{fig:sampling}}
+% Attribution
+{By Spencer C. Imbleau, MIT/Apache 2.0}
+\medskip
+
+\subsubsection{GPU Metric Sampling}
+GPU metric samples may be necessary to collect to prove the efficacy of varying parallel models\footnote{see: \cref{sec:parallel_models}}. For example, one may need to dissect hardware starvation, count compute shaders in flight, recognize poor parallelization, or identify expensive algorithms across hardware in a benchmark. Hence, this is why we provide NVIDIA\copyright instrumentation automatically to our library so we may annotate these anomalies with annotations. In \cref{fig:gpu_sampling} below we show a GPU metric sample example on an NVIDIA\copyright GeForce RTX 3060.
+
+\widesvg
+% Path
+{assets/GPU_Sampling.svg}
+% Caption
+{GPU metric sampling on an NVIDIA\copyright GeForce RTX 3060.\label{fig:gpu_sampling}}
+% Attribution
+{By Spencer C. Imbleau, MIT/Apache 2.0}
+\medskip
+
+While the architecture in \toolname is open and flexible, there are some restrictions to access GPU sampling through NVIDIA\copyright \textit{Nsight Systems}\footnote{see: \href{https://developer.nvidia.com/nsight-systems}{https://developer.nvidia.com/nsight-systems}}, imposed by the hardware developers, namely:
+
+\paragraph{Operating system}
+The currently supported operating systems for NSight Systems are given below.
+\begin{itemize}
+    \item Ubuntu 18.04 and 20.04
+    \item CentOS 7+
+    \item Red Hat Enterprise Linux 7+
+\end{itemize}
+
+\paragraph{Hardware and drivers}
+Graphics cards required must be at least Turing architecture or newer, with minimum driver versions provided below.
+\begin{itemize}
+    \item NVIDIA Turing architecture TU10x, TU11x - r440
+    \item NVIDIA Ampere architecture GA100 - r450
+    \item Ampere architecture GA100 MIG - r470 TRD1
+    \item Ampere architecture GA10x - r455
+\end{itemize}
+
+
+\subsubsection{Accuracy guarantees}
+One philosophy exercised was to elect Rust's nightly features\footnote{see: \href{https://doc.rust-lang.org/rustdoc/unstable-features.html}{https://doc.rust-lang.org/rustdoc/unstable-features.html}} if those features encouraged a subjectively better API. However, we restricted code impacting data handling to stable, standard library features exclusively. This philosophy allows us to make a strong guarantee of memory integrity and safety.\medskip
+
+While data integrity is a non-issue, parallelized data sampling across \code{Monitor}s was susceptible to race conditions. Therefore, we enforced atomic synchronization at execution start with the use of a \code{Barrier}\footnote{see: \href{
+https://doc.rust-lang.org/std/sync/struct.Barrier.html}{
+https://doc.rust-lang.org/std/sync/struct.Barrier.html}}. During parallel data sampling, \code{Montior}s have a set frequency for polling. For every measurement collected by a \code{Monitor}, a \emph{delta-time} is measured to ensure data collection was delivered in the strict frequency specified by the \code{Monitor}, while logs emit warnings if deadlines are not kept. Reported time error may be visualized with built-in support for standard deviation within given \code{Plotter}s.\medskip
+
+\subsection{Language Choice}
+This section aims to justify our decisions on language choice. We chose Rust as the programming language for a benchmarking framework for many reasons. Among those concerns are speed, safety, utility, and popularity.\medskip
+
+\subsubsection{Speed}
+The first reason we chose Rust is because of speed. Rust is built on the notion of zero-cost abstractions. Zero-cost abstractions give the ability to move certain behaviors to compile-time execution or analysis, incurring no runtime cost\cite{Dursun20}. This guarantee provides ergonomic abstractions by providing easy to understand code without runtime overhead. Hence, runtime speed is approximately equivalent to that of C++. In addition, method calls and hooks through foreign function interfaces to another language's application binary interface with identical speed to the foreign language itself\cite{Crichton15}. These zero-cost abstractions make benchmarking overhead agnostic to the target language.
+
+\subsubsection{Safety}
+Rust was the first language to popularize a memory-safe programming model that tries to guarantee no undefined behavior. Undefined behavior can lead to misleading measurements, unstable control flow, or \emph{really} anything. Although unsafe code is permissible with explicit annotations, unlike C and C++, the language is built to guarantee the integrity of memory, with operations such as dereferencing raw pointers being disallowed\cite{WhatUnsafeCanDo}.
+
+\subsubsection{Utility}
+Among the most important use-cases for vector graphics is web rendering, given its high impact among daily web browsing users. Fortunately, the companies which own the two most major web browsers currently use Rust to test their research, providing added portability. One company, Google, is developing \textit{Spinel}\footnote{see also: \cref{sec:spinel}} partly with Rust. The other company, Mozilla, has written Firefox core and Servo\cite{RustServo} in Rust, with Mozilla engineers being the original creator of Rust\cite{RustFoundation21}.\medskip
+
+Web rendering also begs the consideration of portability. Thankfully, Rust is a cross-platform systems programming language with fine control over memory where needed, and is capable of targeting all major operating systems with transpilation while featuring tiered support to several architectures.
+
+\subsubsection{Popularity}
+Rust is an elective choice for most new technologies in the experimental and academic corner involving hardware-accelerated vector graphics. In fact, many of the modern pieces we discuss in the recent years such as \textit{Pathfinder}, \textit{piet-gpu}, and \textit{Lyon} are written entirely in Rust. Rust has also been voted the most loved language for over five years in the annual \textit{Stack Overflow} developer survey\cite{StackDeveloperSurvey}.
+
+\subsection{Extensibility}
+Extensibility is a concern with our framework because of varying contexts and optimization goals in vector graphics, discussed in \cref{sec:optimization_goals}. We aim for a ``plug-n-play'' solution that fits into almost any existing solution with an effort to minimize glue required by a developer.
+\subsubsection{Generics}
+We have provided the \code{Driver}, \code{Benchmark}, and \code{BenchmarkFn} to return generics to allow the developer to specify user-defined accuracy returning user-defined measurements. Technically, these data structures are implemented as \code{Driver<M>}, \code{Benchmark<M>}, and \code{BenchmarkFn<M>}, such that \code{M} implements \code{Measurable}. Use of generics here allows arbitrary accuracy and data control to the developer. 
+
+\subsubsection{Serialization}
+One of the only constraints of a \code{Measurable} data structure is implementation of \code{Serialize}\footnote{see: \href{https://docs.serde.rs/serde/trait.Serialize.html}{https://docs.serde.rs/serde/trait.Serialize.html}}. The constraint requires the data structure to have a defined policy to convert data into an easily transmittable form, such that it may be ingested by a \code{Writer} or \code{Plotter}.
+
+\subsection{Software API}
+The ergonomics of our architecture should lead to an intuitive, decoupled API for developers which makes sense and enables rapid prototyping. We will provide code examples and show how we accomplish these goals to fit our functional requirements.
+
+\subsubsection{Intuitiveness}
+Our software API follows all conventions and API guidelines established by the Rust-language team\cite{ApiGuidelines22}. These guidelines include eagerly implementing common traits which play well with other libraries, providing documentation, and following best practices, such as semantic versioning\footnote{see: \href{https://semver.org/}{https://semver.org/}}, to ensure user-friendliness. We go beyond the checklist, dually specializing in rapid prototyping. We support rapid prototyping by reducing boilerplate code where possible. We provide a prelude, well-behaved macros, and take advantage of our architecture's indirection with support for conversions.\medskip
+
+\paragraph{Prelude}
+Providing a prelude allows easy and quick access to almost all significant types through a universal import. Although this is not practical if the binary size is a concern, it can be an excellent way to quickly import everything one may use in a benchmark. 
+
+\begin{snippet}
+\caption{The prelude import statement for \toolname.}\label{code:prelude}
+\begin{minted}{rust}
+use vgpu_bench::prelude::*;
+\end{minted}
+\end{snippet}
+
+\paragraph{Macros}\label{sec:macros}
+Macros provide code that writes other code, also known as metaprogramming. Rust has macro-support that enables functionality similar to functions but without runtime cost. Building upon Rust's philosophy of zero-cost abstractions and rapid prototyping, our software supports many well-behaved macros which increase developer productivity.\medskip
+
+For example, the architecture of \code{Measurable} is a type alias constrained to any data structure which may be serialized, debugged, and is safe to send and synchronize across thread boundaries. These requirements alias the traits \code{Serialize}\footnote{see: \href{https://docs.serde.rs/serde/trait.Serialize.html}{https://docs.serde.rs/serde/trait.Serialize.html}}, \code{Debug}\footnote{see: \href{https://doc.rust-lang.org/std/fmt/trait.Debug.html}{https://doc.rust-lang.org/std/fmt/trait.Debug.html}}, \code{Send}\footnote{see: \href{https://doc.rust-lang.org/std/marker/trait.Send.html}{https://doc.rust-lang.org/std/marker/trait.Send.html}}, and \code{Sync}\footnote{see: \href{https://doc.rust-lang.org/std/marker/trait.Sync.html}{https://doc.rust-lang.org/std/marker/trait.Sync.html}}. These are many trait constraints, and hence, it would often be burdensome and anti-thetic to the idea of rapid prototyping as a requirement to implement every trait. As a solution, we provide a procedural macro attribute, \mintinline{rust}{#[measurement]}, among others, to automatically derive these traits in-line at compile time. See \cref{code:macro} below.\medskip
+
+\begin{snippet}
+\caption{Deriving the \mintinline{rust}{Measurable} trait with a procedural macro.}\label{code:macro}
+\begin{minted}{rust}
+#[measurement]
+struct ToleranceMeasurement {
+    tolerance: f32,
+    polygons: u32,
+}
+\end{minted}
+\end{snippet}
+
+\paragraph{Indirection}
+Our API attempts to reduce boilerplate and complexity where possible by taking advantage of indirection. One may easily opt-out of extended features available in the architectural wrappers \code{Driver} and \code{Benchmark}. For example, a \code{BenchmarkFn} closure may be executed alone if there is no need for \code{Monitor} orchestration provided by the \code{Benchmark} wrapper. A \code{BenchmarkFn} will still incur the benefits of automated GPU annotations on behalf of \toolname. See \cref{code:bfn_run} below for an example.\medskip
+
+\begin{snippet}
+\caption{Rapid-prototyping execution using only \code{BenchmarkFn}.}\label{code:bfn_run}
+\begin{minted}{rust}
+use vgpu_bench::prelude::*;
+
+#[measurement]
+struct ToleranceMeasurement {
+    tolerance: f32,
+    polygons: u32,
+}
+
+pub fn main() -> Result<()> {
+    BenchmarkFn::new(|| {
+        let mut measurements = Measurements::new();
+        // Collect real measurements here...
+        for i in 0..10 {
+            measurements.push(ToleranceMeasurement {
+                tolerance: 1_f32 / i as f32,
+                polygons: i * i,
+            });
+        }
+        // Benchmarking done!
+        Ok(measurements)
+    })
+    .run("Tolerance Test")?
+    .write("output/tolerance.csv")?;
+
+    Ok(())
+}
+\end{minted}
+\end{snippet}
+
+\paragraph{Effortless conversion}
+Conversions traits are eagerly implemented, allowing individuals requiring additional complexity to easily upgrade items such as a closure into \code{BenchmarkFn}, into a \code{Benchmark}, into a \code{Driver}. See \cref{code:conversion} below for an example.\medskip
+
+\begin{snippet}
+\caption{Effortless conversions of data structures in \toolname.}\label{code:conversion}
+\begin{minted}{rust}
+use std::{thread, time::Duration};
+use vgpu_bench::{monitors::CpuUtilizationMonitor, prelude::*};
+
+#[measurement]
+struct RenderTime {
+    render_time: u32,
+}
+
+pub fn main() -> Result<()> {
+    let closure = || {
+        let mut measurements = Measurements::new();
+        // Collect real measurements here...
+        for i in 0..5 {
+            let render_time_ms = 1.0 + 0.5 * (i as f32).sin();
+            measurements.push(RenderTime { render_time_ms });
+            thread::sleep(Duration::from_secs_f32(render_time_ms));
+        }
+        // Benchmarking done!
+        Ok(measurements)
+    };
+    // Convert closure into GPU-annotated `BenchmarkFn`
+    let benchmk_fn: BenchmarkFn<RenderTime> = closure.into();
+    // Create `Benchmark` from `BenchmarkFn`
+    let benchmark: Benchmark<RenderTime> = Benchmark::from(benchmk_fn)
+        // Attach a monitor
+        .monitor(CpuUtilizationMonitor {
+            name: "CPU Utilization Monitor",
+            frequency: MonitorFrequency::Hertz(1),
+        });
+    // Convert `Benchmark` into `Driver`
+    let driver: Driver<RenderTime> = benchmark.into();
+    // Execute
+    Ok(driver.run()?)
+}
+
+\end{minted}
+\end{snippet}
+
+
+\subsection{Features}
+Our product \toolname offers additional features for various reasons. As of this publication, our product offers an \textit{svg} generator, tessellation renderer, and pre-written rendering and tessellation benchmarks.\medskip
+
+Including these features only requires the developer specify the desired features to their project's \code{Cargo.toml} file. See \cref{code:features} for an example \code{Cargo.toml} file.
+
+\begin{snippet}
+\caption{Importing feature dependencies from \toolname.}\label{code:features}
+\begin{minted}{toml}
+[package]
+name = "An example benchmark"
+version = "0.1.0"
+authors = ["Spencer C. Imbleau <spencer@imbleau.com>"]
+edition = "2021"
+
+[dependencies]
+vgpu_bench = {
+    version = "*", 
+    features = ["svg-generator", 
+                "render-kit", 
+                "tessellation-kit"]
+}
+\end{minted}
+\end{snippet}
+
+% Begin table
+\begin{table}[H]
+\centering
+\begin{tabular}{ |p{.2\mywidth}||p{.6\mywidth}|p{.1\mywidth}| }
+\hline
+\multicolumn{3}{|c|}{Cargo.toml Features}\\
+\hline
+Feature&Provides&Default?\\
+\hline
+svg-generator&An \textit{svg} file generator with options for scale, amount, and primitive used.&No\\
+\hline
+render-kit&Access to pre-written benchmarks and a baseline GPU-centric renderer for comparison.&No\\
+\hline
+tessellation-kit&Access to pre-written benchmarks and a baseline tessellator for comparison.&No\\
+\hline
+\end{tabular}
+\caption{\label{tab:features}Features of \toolname.}
+\end{table}
+
+\subsubsection{SVG Generator}\label{sec:svg-generator}
+The \code{svg-generator} feature injects an \textit{svg} generator crate into the root library. This crate allows the generation of \textit{svg} files with varying primitives, amounts, and rotations. This handy crate quickly mocks \textit{svg} data, which is the established vector standard for web rendering. These files can be manipulated or used directly in tests. It is also possible to define and generate custom primitives.
+
+\svg
+% Path
+{assets/SVG_Generator.svg}
+% Caption
+{A generated \textit{svg} file containing fifty curves.}
+% Attribution
+{By Spencer C. Imbleau, MIT/Apache 2.0}
+
+\subsubsection{Render Kit}\label{sec:render-kit}
+The \code{render-kit} feature injects a crate full of pre-written tests which accept a data structure implementing the \code{Renderer} trait, as well as a proto-type GPU-centric renderer as a baseline reference that already implements the \code{Renderer} trait. The \code{Renderer} trait intends to link an arbitrary renderer into a collection of pre-written tests with a small amount of implementation glue. Moreover, the trait and renderer facilitate easy integration for competitors wishing to test against each other quickly; adding a test that operates on a discrete \code{Renderer} extends all implementations.\medskip
+
+The \textit{render-kit} feature also provides an in-house renderer implementing the \code{Renderer} trait. The provided renderer transmutes vector data through tessellation and provides basic hardware acceleration. The renderer can adjust zoom, pan, wireframe view, and anti-aliasing at runtime. Otherwise, the GPU features include read-only storage buffers purposed to read tessellation data and MSAA. The implementation depends on on \textit{wgpu-rs}\footnote{see: \href{https://wgpu.rs/}{https://wgpu.rs/}} as a graphics abstraction, which is an implementation of the \textit{WebGPU}\href{https://www.w3.org/community/gpu/} specification in Rust. Moreover, wgpu-rs can be transpiled and chooses a backend such as Vulkan or Metal deterministically according to the user's hardware. This backend provides an optimized runtime performance but may fall back to a software rendering implementation. In addition, the renderer provided in \textit{render-kit} requests minimal GPU features as a benefit of tessellation, and MSAA. This renderer is engineered as a baseline to record the minimum time necessary for rendering a tessellated model while still being hardware-accelerated with GPU caching.\medskip
+
+\widesvg
+% Path
+{assets/Renderkit.svg}
+% Caption
+{Our \code{render-kit} GPU-centric tessellation renderer showing \textit{svg} rendering (left) and wireframe \textit{svg} rendering (right).}
+% Attribution
+{By Spencer C. Imbleau, MIT/Apache 2.0}
+
+\subsubsection{Tessellation Kit}
+Similar to the \textit{render-kit}, the \code{tessellation-kit} feature injects a crate full of pre-written tests which accept a data structure implementing the \code{Tessellator} trait. However, contrary to the \textit{render-kit}, we do not provide an in-house minimalist tessellator. Instead, we expose \textit{Lyon}\cite{Lyon} with glued trait implementation, which dually provides \textit{libtess2} through Lyon as an alternative backend. The intention for the \code{Tessellator} trait is to link an arbitrary tessellator into a collection of pre-written tests with a small amount of implementation glue, just as is the purpose for the \textit{render-kit's} \code{Renderer} trait.
