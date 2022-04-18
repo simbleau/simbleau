@@ -1,6 +1,6 @@
 <div align="center">
 
-👨 Spencer C. Imbleau ![Pronouns](https://img.shields.io/badge/style-flat--square?style=he/him)
+**Spencer C. Imbleau** ![Pronouns](https://img.shields.io/badge/-he/him-000000?style=flat-square)
 
 [📧 E-mail](mailto:spencer@imbleau.com) [🏠 Website](https://spencer.imbleau.com/) [📋 Résumé](https://spencer.imbleau.com/resume/) [📝 Blog](https://simbleau.github.io)\
 [![Sponsor Me](https://img.shields.io/badge/sponsor-30363D?style=for-the-badge&logo=GitHub-Sponsors&logoColor=#white)](https://github.com/sponsors/simbleau)
