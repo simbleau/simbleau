@@ -15,7 +15,7 @@ if [[ "$choice" =~ ^[yY]?$ ]]; then
 	echo "Complete."
 	echo -n "Installing settings.json..."
 	rm ~/.config/Code/User/settings.json
-	cp initial_settings.json ~/.config/Code/User/settings.json
+	cp sync.json ~/.config/Code/User/settings.json
 	echo "Complete."
 	echo
 	exit 0
