@@ -33,6 +33,10 @@ if [[ "$choice" =~ ^[yY]?$ ]]; then
 	ssh-add $link_dir/github_id_rsa
 	echo "Complete."
 	echo
+	echo "Add an SSH Key: https://github.com/settings/ssh/new"
+	if [ -x "$(command -v firefox)" ]; then
+		firefox https://github.com/settings/ssh/new &
+	fi
 	if [ -x "$(command -v xclip)" ]; then
 		echo "Public key (copied to your clipboard):"
 		xclip "$output_dir/github_id_rsa.pub"
