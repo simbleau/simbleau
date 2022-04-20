@@ -40,4 +40,6 @@ if [ "$confirmed" = false ]; then
 	fi
 fi
 # Run command
-cd ${gitrepo} && git push | at ${pushtime}
+at $pushtime <<EOF
+cd ${gitrepo} && git push
+EOF
