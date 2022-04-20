@@ -1,0 +1,44 @@
+#!/bin/bash
+# Check atq installation
+if [ ! -x "$(command -v at)" ]; then
+	echo "fatal: `at` command not found (is it installed?)"
+	exit 1
+fi
+# Check git installation
+if [ ! -x "$(command -v git)" ]; then
+	echo "fatal: `git` command not found (is it installed?)"
+	exit 1
+fi
+# Check git repository
+if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+	echo "fatal: not a git repository (or any of the parent directories)"
+	exit 2
+fi
+# Get directory
+gitrepo=$(pwd)
+# Check if user passed in `-y` flag
+confirmed=false
+if [ "$1" = "-y" ]; then
+	confirmed=true
+	shift
+fi
+# Get time from user
+pushtime=$@
+if [ "$#" -eq 0 ]; then
+	read -p "Enter a time (atq) > " pushtime
+	echo # blank line
+fi
+# Print parameters
+echo "Git repository: ${gitrepo}"
+echo "Scheduled push: ${pushtime}"
+# Get permission to schedule
+if [ "$confirmed" = false ]; then
+	read -p "Proceed? (y/N) > " proceed
+	if [[ ! "$proceed" =~ ^[yY]$ ]]; then
+		echo "Aborted"
+		exit 0
+	fi
+fi
+# Generate command
+cmd="cd ${gitrepo} && git push | at ${pushtime}"
+echo "$cmd"

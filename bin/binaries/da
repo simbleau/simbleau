@@ -1,0 +1,1 @@
+trans -b -t en -s da -show-original N -show-languages N -show-original-phonetics n -show-alternatives n -show-prompt-message n -j $@

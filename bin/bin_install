@@ -1,0 +1,22 @@
+#!/bin/bash
+# Gather information
+this_dir=$(dirname "$0")
+source_dir=$(realpath $this_dir)
+link_dir=$(realpath ~/bin/)
+
+read -p "Begin? (Y/n) > " choice
+if [[ "$choice" =~ ^[yY]?$ ]]; then
+	echo "Copying binaries..."
+	[ -d "$link_dir" ] || mkdir -p "$link_dir"
+	for binary in $source_dir/binaries/*; do
+		echo "found $binary"
+		dest="$link_dir/$(basename "$binary")"
+		ln -sf "$binary" "$dest"
+		echo "linked $dest"
+	done
+	echo "Complete."
+	exit 0
+else
+	echo "Program aborted."
+	exit 0
+fi
