@@ -39,6 +39,5 @@ if [ "$confirmed" = false ]; then
 		exit 0
 	fi
 fi
-# Generate command
-cmd="cd ${gitrepo} && git push | at ${pushtime}"
-echo "$cmd"
+# Run command
+cd ${gitrepo} && git push | at ${pushtime}
