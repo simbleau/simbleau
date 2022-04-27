@@ -1,7 +1,7 @@
-@PROCEEDINGS{Silva18,
+@misc{Silva18,
 author = {Nicolas Silva},
 title = {Vector graphics rendering on the GPU in Rust with Lyon},
-url = {https://www.youtube.com/watch?v=2Ng5kpDirDI},
+howpublished = {\url{https://www.youtube.com/watch?v=2Ng5kpDirDI}},
 organization = {RustFest 2018},
 place={Paris}, 
 year={2018}, 
@@ -57,7 +57,8 @@ numpages = {10}
   commit = {044b380955c5a075ac525c7b92d0884f0379ac7a}
 }
 
- @misc{D2D_Tess, title={Geometry Realizations Overview}, url={https://docs.microsoft.com/en-us/windows/win32/direct2d/geometry-realizations-overview#why-use-geometry-realizations}, journal={Win32 apps | Microsoft Docs}, author={Microsoft},publisher={Microsoft}, year={2018}, month={May}} 
+ @misc{D2D_Tess, title={Geometry Realizations Overview}, howpublished = {\url{https://docs.microsoft.com/en-us/windows/win32/direct2d/geometry-realizations-overview#why-use-geometry-realizations}}, journal={Win32 apps | Microsoft Docs}, author={Microsoft},publisher={Microsoft}, year={2018}, month={May}} 
+
  
      @article{Loop05,
     author = {Loop, Charles and Blinn, Jim},
@@ -93,8 +94,10 @@ numpages = {10}
 }
 
  @Article{Levien20, title={A sort-middle architecture for 2D graphics}, url={https://raphlinus.github.io/rust/graphics/gpu/2020/06/12/sort-middle.html}, journal={Raph Levien's blog}, author={Levien, Raph Linus}, year={2020}, month={Jun}} 
+
  
-  @misc{WebGPU, title={WebGPU}, url={https://www.w3.org/TR/webgpu/}, journal={WebGPU W3C Working Draft}, author={W3C®}, year={2021}, month={Jun}} 
+  @misc{WebGPU, title={WebGPU}, howpublished = {\url{https://www.w3.org/TR/webgpu/}}, journal={WebGPU W3C Working Draft}, author={W3C®}, year={2021}, month={Jun}} 
+
   
   @inproceedings{Laine11,
 author = {Laine, Samuli and Karras, Tero},
@@ -216,7 +219,8 @@ series = {DAC '64}
 
  @misc{Pomax22, 
  author={Pomax},
- title={A primer on Bézier curves}, url={https://pomax.github.io/bezierinfo/#decasteljau}, journal={Pomax.github.io}, year={2022}, month={Jan}} 
+ title={A primer on Bézier curves}, 
+ howpublished = {\url{https://pomax.github.io/bezierinfo/#decasteljau}}, journal={Pomax.github.io}, year={2022}, month={Jan}} 
 
 @article{10.1145/964965.808573,
 author = {Barr, Alan H.},
@@ -296,9 +300,18 @@ series = {I3D '12}
 
   
   
-   @misc{Eberly02, title={Triangulation by Ear Clipping}, url={https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf}, journal={Geometric Tools}, publisher={Geometric Tools}, author={Eberly, David}, year={2002}, month={Nov}} 
+   @misc{Eberly02, title={Triangulation by Ear Clipping}, howpublished = {\url{https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf}}, journal={Geometric Tools}, publisher={Geometric Tools}, author={Eberly, David}, year={2002}, month={Nov}} 
+
    
- @misc{Fyrd22, url={https://caniuse.com/svg-smil}, journal={SVG SMIL animation}, publisher={Can I Use}, author={Fyrd}} 
+ 
+@Misc{Fyrd22,
+  author    = {Fyrd},
+  title     = {Can I Use},
+  url       = {https://caniuse.com/svg-smil},
+  journal   = {SVG SMIL animation},
+  publisher = {Can I Use},
+}
+
  
  
  
@@ -328,7 +341,7 @@ series = {I3D '12}
   howpublished = {\url{https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/src/graphics/lib/compute/spinel}}
 }
 
- @misc{Silva19, title={A look at pathfinder}, url={https://nical.github.io/posts/a-look-at-pathfinder.html}, journal={Eight million pixels and counting}, author={Silva, Nicolas}, year={2019}, month={May}} 
+ @misc{Silva19, title={A look at pathfinder}, howpublished = {\url{https://nical.github.io/posts/a-look-at-pathfinder.html}}, journal={Eight million pixels and counting}, author={Silva, Nicolas}, year={2019}, month={May}} 
 
 @misc{Pathfinder_Features,
   author = {Patric Walton},
@@ -357,9 +370,18 @@ location = {San Diego, California},
 series = {SIGGRAPH '07}
 }
 
- @misc{Chlumsky17, url={https://onlinelibrary.wiley.com/doi/abs/10.1111/cgf.13265}, journal={Improved Corners with Multi-Channel Signed Distance Fields}, publisher={Wiley Online Library}, author={Chlumský, V. and Sloup, J. and Šimeček, I.}, year={2017}, month={Sep}} 
+ 
+@misc{Chlumsky17,
+  author    = {Chlumský, V. and Sloup, J. and Šimeček, I.},
+  journal     = {Improved Corners with Multi-Channel Signed Distance Fields},
+  howpublished = {\url{https://onlinelibrary.wiley.com/doi/abs/10.1111/cgf.13265}},
+  month     = {Sep},
+  publisher = {Wiley Online Library},
+  year      = {2017},
+}
 
- @misc{Walton18, title={GPU Rasterization, the Orphan Rules, and Rocket}, url={https://www.youtube.com/watch?v=AI7SLCubTnk}, journal={Bay Area Rust March 2017}, publisher={Air Mozilla}, author={Walton, Patrick}, year={2018}, month={Dec}} 
+ @misc{Walton18, title={GPU Rasterization, the Orphan Rules, and Rocket}, howpublished = {\url{https://www.youtube.com/watch?v=AI7SLCubTnk}}, journal={Bay Area Rust March 2017}, publisher={Air Mozilla}, author={Walton, Patrick}, year={2018}, month={Dec}} 
+
  
  
 
@@ -372,11 +394,19 @@ series = {SIGGRAPH '07}
   howpublished = {\url{https://insights.stackoverflow.com/survey/2021}}
 }
 
- @misc{RustInProduction, title={Production}, url={https://www.rust-lang.org/production/users}, journal={Production Users - Rust Programming Language}, publisher={Rust Team}} 
  
-  @misc{Dursun20, title={Rust zero cost abstractions in action}, url={https://idursun.com/posts/rust_zero_cost_abstractions_in_action/}, journal={Scratch Pad}, author={Dursun, Ibrahim}, year={2020}, month={Feb}} 
+@WWW{RustInProduction,
+  title        = {Production Users},
+  url          = {https://www.rust-lang.org/production/users},
+  organization = {Rust Team},
+}
+
+ 
+  @misc{Dursun20, title={Rust zero cost abstractions in action}, howpublished = {\url{https://idursun.com/posts/rust_zero_cost_abstractions_in_action/}}, author={Dursun, Ibrahim}, year={2020}, month={Feb}} 
+
   
-   @misc{Crichton15, title={Rust once, Run everywhere: Rust blog}, url={https://blog.rust-lang.org/2015/04/24/Rust-Once-Run-Everywhere.html}, journal={The Rust Programming Language Blog}, publisher={Rust Team}, author={Crichton, Alex}, year={2015}, month={Apr}} 
+   @misc{Crichton15, title={Rust once, Run everywhere: Rust blog}, howpublished = {\url{https://blog.rust-lang.org/2015/04/24/Rust-Once-Run-Everywhere.html}}, journal={The Rust Programming Language Blog}, publisher={Rust Team}, author={Crichton, Alex}, year={2015}, month={Apr}} 
+
    
    
 @misc{WhatUnsafeCanDo,

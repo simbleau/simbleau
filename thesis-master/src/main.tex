@@ -44,10 +44,12 @@
 \usepackage{cleveref}
 % Use Minted for syntax highlighting and code examples.
 \usepackage{minted}
+% To ensure titles do not overflow margins
+\usepackage[raggedright]{titlesec}
 
 % LINK FORMATTING
 \hypersetup{
-    linktocpage,
+	linktocpage,
     colorlinks,
     citecolor=black,
     filecolor=black,
@@ -92,8 +94,6 @@
 \setlength{\marginparsep}{0in}
 \setlength{\marginparpush}{0in}
 
-% \flushbottom
-
 % CONFIGURATION
 \newcommand{\thesistitle}{UNDERSTANDING HARDWARE-ACCELERATED 2D VECTOR GRAPHICS}
 \newcommand{\graduationdate}{May 2022}
@@ -119,72 +119,68 @@
     \begin{figure}[H]
     \centering
     \includesvg[width=\linewidth, height=7in, keepaspectratio]{#1}
-    \caption{#2\protect\footnotemark} % Attribution required by CC
+    \caption{#2\protect\footnotemark}
     \end{figure}
-    \footnotetext{attribution: #3}
+    \footnotetext{attribution: #3} % Attribution required by CC
 }
 \newcommand{\svg}[3]{
     \begin{figure}[H]
     \centering
     \includesvg[width=.7\linewidth, height=4.5in, keepaspectratio]{#1}
-    \caption{#2\protect\footnotemark} % Attribution required by CC
+    \caption{#2\protect\footnotemark}
     \end{figure}
-    \footnotetext{attribution: #3}
+    \footnotetext{attribution: #3} % Attribution required by CC
 }
 \newcommand{\smallsvg}[3]{
     \begin{figure}[H]
     \centering
     \includesvg[width=.4\linewidth, height=3in, keepaspectratio]{#1}
-    \caption{#2\protect\footnotemark} % Attribution required by CC
+    \caption{#2\protect\footnotemark}
     \end{figure}
-    \footnotetext{attribution: #3}
+    \footnotetext{attribution: #3} % Attribution required by CC
 }
 
-% Start document
 \begin{document}
-
 % FRONT MATTER
-\pagenumbering{gobble} % Turn off page numbering
+\pagenumbering{roman} % Turn on roman page numbering
+\setcounter{page}{1}
 \include{front_matter/cover}
 \newpage
 \include{front_matter/signatures}
 \newpage
 \include{front_matter/copyright}
-\pagenumbering{roman} % Turn on roman page numbering
-\setcounter{page}{1}
 \newpage
-\input{front_matter/abstract}
+\include{front_matter/abstract}
 \newpage
-\input{front_matter/acknowledgements}
+\include{front_matter/acknowledgements}
 \newpage
-\input{front_matter/preface}
+\include{front_matter/preface}
 \newpage
-\input{front_matter/toc}
-
+\include{front_matter/toc}
 % CHAPTERS
 \pagenumbering{arabic}
 \setcounter{page}{1}
 \newpage
-\input{chapters/Introduction}
+\include{chapters/introduction}
 \newpage
-\input{chapters/Background}
+\include{chapters/background}
 \newpage
-\input{chapters/Literature}
+\include{chapters/literature}
 \newpage
-\input{chapters/Theory}
+\include{chapters/theory}
 \newpage
-\input{chapters/Methodology}
+\include{chapters/methodology}
 \newpage
-\input{chapters/Results}
+\include{chapters/results}
 \newpage
-\input{chapters/Discussion}
+\include{chapters/discussion}
 \newpage
-\input{chapters/Conclusion}
-
+\include{chapters/conclusion}
 % BACK MATTER
 \newpage
-\include{back_matter/Bibliography}
+\include{back_matter/bibliography}
 \newpage
-\include{back_matter/Appendix}
-
+\include{back_matter/appendix}
+\newpage
+\include{back_matter/vita}
 \end{document}

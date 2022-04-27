@@ -49,7 +49,6 @@ Historically, \textit{Pathfinder} was slighted to be used in the Servo\footnote{
 \textit{piet-gpu}\footnote{see: \href{https://github.com/linebender/piet-gpu}{https://github.com/linebender/piet-gpu}} is an experimental prototype 2D GPU renderer currently in development, and relatively stable. The renderer features a novel compute-centric pipeline. The prototype is a retained-mode renderer, buffering scene-graph fragments on the GPU to accelerate static continuity. In addition, \textit{piet-gpu} offers a portable runtime and compatibility fallback, making the renderer relatively general purpose. The research has contributed impressive results, namely with leveraging a sort-middle GPU architecture\footnote{see: \href{https://raphlinus.github.io/rust/graphics/gpu/2020/06/12/sort-middle.html}{https://raphlinus.github.io/rust/graphics/gpu/2020/06/12/sort-middle.html}}.
 
 \subsection{Spinel}\label{sec:spinel}
-
 Lastly, \textit{Spinel}\footnote{see: \href{https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/src/graphics/lib/compute/spinel}{https://fuchsia.googlesource.com/fuchsia/+/refs/heads/main/src/graphics/lib/compute/spinel}} is a perplexing renderer developed by Google, with little outside details. The future technology is self-described by Google as ``a high-performance GPU-accelerated vector graphics, compositing and image processing pipeline''\cite{Spinel}. The technology currently exists as a graphics API in Google's new operating system, \textit{Fuchsia}\footnote{see: \href{https://fuchsia.dev/}{https://fuchsia.dev/}}, but is likely to be integrated into \textit{Skia} and follows a similar role. For now, the project is experimental and locked behind Google's operating system. Moreover, building and running Spinel is onerous, with little information to an end-user. For these reasons, working fluidly with Spinel may be oppressively difficult for the discernible future. However, promises Spinel makes are exciting, such as inexpensive redraw, extensibility for animation, entirely GPU-processed pipeline, and explicit support for paths, styling, and composition\cite{Spinel_Features}.
 
 \subsection{Lyon}\label{sec:lyon_lit}
@@ -67,9 +66,8 @@ Lyon\footnote{see: \href{https://github.com/nical/lyon}{https://github.com/nical
 \section{Research}
 Listed below are significant research advancements in arithmetic, theory, or results. This research is attractive to those wishing to join the field or seek more detail into the space.
 
-\subsection{Improved Alpha-Tested Magnification for Vector Textures and Special Effects}\cite{Green07}
-
-Originally a product of Valve, this research was presented at SIGGRAPH in 2007 as a novel encoding of raster images to improve the magnification of textures with low storage requirements efficiently. These encodings are signed distance fields, or \emph{SDFs}. Rendering SDFs requires low hardware requirements and a trivial shader for the GPU. In addition, the model provides support for anti-aliasing and considerable up-scaling to traditional textures, making the research attractive to game developers. Given multiple channels, scaling can also be improved\cite{Chlumsky17}, shown in \cref{fig:sdf}. While SDFs are not a vector graphics model, the encoding is worth mentioning due to its popularity and similarity. It is also worth noting that generating an SDF requires a significant amount of computational resources and is typically done on the CPU, making it a pre-baked asset not suitable for dynamic rendering.\medskip
+\subsection{Improved Alpha-Tested Magnification for Vector Textures and Special Effects}
+Originally a product of Valve, this research was presented at SIGGRAPH in 2007 as a novel encoding of raster images to improve the magnification of textures with low storage requirements efficiently\cite{Green07}. These encodings are signed distance fields, or \emph{SDFs}. Rendering SDFs requires low hardware requirements and a trivial shader for the GPU. In addition, the model provides support for anti-aliasing and considerable up-scaling to traditional textures, making the research attractive to game developers. Given multiple channels, scaling can also be improved\cite{Chlumsky17}, shown in \cref{fig:sdf}. While SDFs are not a vector graphics model, the encoding is worth mentioning due to its popularity and similarity. It is also worth noting that generating an SDF requires a significant amount of computational resources and is typically done on the CPU, making it a pre-baked asset not suitable for dynamic rendering.\medskip
 
 \widesvg
 % Path
@@ -78,11 +76,9 @@ Originally a product of Valve, this research was presented at SIGGRAPH in 2007 a
 {Low-resolution SDF upscaling (left), high-resolution SDF upscaling (middle), and multi-channel low-resolution SDF upscaling (right).\label{fig:sdf}}
 % Attribution
 {\href{https://doi.org/10.1111/cgf.13265}{Improved Corners with Multi-Channel Signed Distance Fields, Fair Use}}
-\medskip
 
-\subsection{Resolution Independent Curve Rendering Using Programmable Graphics Hardware}\cite{Loop05}\label{sec:LoopBlinn}
-
-Presented at SIGGRAPH Asia in 2005 and published in the ACM Transactions on Graphics (TOG), Microsoft researchers Charles Loop and James Blinn presented the first major analytic algorithm to render resolution-independent vector graphics using programmable graphics hardware. The method constructs vector images from mosaics of triangulated Bézier control points using a newly conceptualized \emph{stencil buffer} data structure. The method worked in two passes. First, a hull of triangles constructed asserts the shape's fill using a stencil buffer. After fill is determined, a second pass is required to cut out the fragments with a shader. The shader is, similar to SDFs, trivial. The shader algorithm functions by assigning varyings \(u, v)\) to the control points of a quadratic Bézier curve, discarding the fragment under a retention policy. The shader's retention policy is denoted below in \cref{eq:loop_blinn_shader}.\medskip
+\subsection{Resolution Independent Curve Rendering Using Programmable Graphics Hardware}\label{sec:LoopBlinn}
+Presented at SIGGRAPH Asia in 2005 and published in the ACM Transactions on Graphics (TOG), Microsoft researchers Charles Loop and James Blinn presented the first major analytic algorithm to render resolution-independent vector graphics using programmable graphics hardware. The method constructs vector images from mosaics of triangulated Bézier control points using a newly conceptualized \emph{stencil buffer} data structure\cite{Loop05}. The method worked in two passes. First, a hull of triangles constructed asserts the shape's fill using a stencil buffer. After fill is determined, a second pass is required to cut out the fragments with a shader. The shader is, similar to SDFs, trivial. The shader algorithm functions by assigning varyings \(u, v)\) to the control points of a quadratic Bézier curve, discarding the fragment under a retention policy. The shader's retention policy is denoted below in \cref{eq:loop_blinn_shader}.\medskip
 
 \tocequation{Retention equation of Loop-Blinn fragment shader.}
 \begin{center}
@@ -98,26 +94,25 @@ apply varyings \((u, v) = (0, 0), (0.5, 0), (1, 1)\),
 \medskip
 
 
-\subsection{Random Access Vector Graphics}\cite{Nehab08}\label{sec:RAVG}
-
-Presented at SIGGRAPH Asia and published by the ACM ToG in 2008, Diego Nehab and Hugues Hoppe created a tiling approach for vector graphics based on a considerable upfront computation expense. This pre-computation model enhanced the image's interactivity by providing an approach to redraw mapped vector images on arbitrary objects inexpensively. This technique significantly extended the ability to render static vector graphics (with support for transformations) at interactive rates. The pre-computation method required considerable resources to cache, making the process impossible for interactive applications that may deform the vector texture. In practice, the approach encoded ``\textit{Ghostscript Tiger}'' in 0.44 seconds\cite{Nehab08}, which is not a challenging render by modern standards.\medskip
+\subsection{Random Access Vector Graphics}\label{sec:RAVG}
+Presented at SIGGRAPH Asia and published by the ACM ToG in 2008, Diego Nehab and Hugues Hoppe created a tiling approach for vector graphics based on a considerable upfront computation expense. This pre-computation model enhanced the image's interactivity by providing an approach to redraw mapped vector images on arbitrary objects inexpensively\cite{Nehab08}. This technique significantly extended the ability to render static vector graphics (with support for transformations) at interactive rates. The pre-computation method required considerable resources to cache, making the process impossible for interactive applications that may deform the vector texture. In practice, the approach encoded ``\textit{Ghostscript Tiger}'' in 0.44 seconds\cite{Nehab08}, which is not a challenging render by modern standards. The image is shown below in \cref{fig:tiger}.\medskip
 
 \smallsvg
 % Path
 {assets/Ghostscript_Tiger.svg}
 % Caption
-{Ghostscript Tiger}
+{``Ghostscript Tiger'', the ``Hello, World!'' of vector graphics.\label{fig:tiger}}
 % Attribution
-{\href{http://www.gnu.org/licenses/agpl.html}{Ghostscript authors, AGPL}}\medskip
+{\href{http://www.gnu.org/licenses/agpl.html}{Ghostscript authors, AGPL}}
 
-\section{High Performance Software Rasterization on GPUs}\cite{Laine11}
-Authors Samuli Laine and Tero Karras, researchers from NVIDIA, had their work published at the ACM SIGGRAPH Symposium in 2011. Their implementation ``CUDA Raster'' was easily extensible and featured a traditionally software-based graphics pipeline on a GPU, which obeyed ordering constraints from traditional rendering pipelines. Their performance improved the CPU-based equivalence by 2–8x, comparing the approach to a top-of-the-line GPU in 2011. This research did not focus on vector graphics but set up many theories behind compute-based parallel rendering.
+\section{High Performance Software Rasterization on GPUs}
+ As a precursor in theory to compute-based parallel rendering, authors Samuli Laine and Tero Karras, researchers from NVIDIA, had their work published at the ACM SIGGRAPH Symposium in 2011. Their implementation ``CUDA Raster'' was easily extensible and featured a traditionally software-based graphics pipeline on a GPU, which obeyed ordering constraints from traditional rendering pipelines. Their performance improved the CPU-based equivalence by 2–8x, comparing the approach to a top-of-the-line GPU in 2011\cite{Laine11}.
 
-\subsection{GPU-Accelerated Path Rendering}\cite{Kilgard12}
-Presented at SIGGRAPH Asia and published by the ACM ToG in 2012, Mark J. Kilgard and Jeff Bolz released one of the first analytic rendering approaches to 2D vector graphics on the GPU. Their approach builds upon existing techniques for curve rendering, specifically the stencil buffer technique\footnote{see: \cref{sec:LoopBlinn}}. Kilgard and Bolz however explicitly decouple the stencil step to determine path fill and stroked coverage with parallelism.
+\subsection{GPU-Accelerated Path Rendering}
+Presented at SIGGRAPH Asia and published by the ACM ToG in 2012, Mark J. Kilgard and Jeff Bolz released one of the first analytic rendering approaches to 2D vector graphics on the GPU. Their approach builds upon existing techniques for curve rendering, specifically the stencil buffer technique\footnote{see: \cref{sec:LoopBlinn}}. Kilgard and Bolz however explicitly decouple the stencil step to determine path fill and stroked coverage with parallelism\cite{Kilgard12}.
 
-\subsection{Massively Parallel Vector Graphics}\cite{Ganacim14}
-Published in the ACM ToG and Proceedings of ACM SIGGRAPH Asia 2014, Ganacim et al. reached higher levels of parallelization in vector graphics rendering. This solution further builds on previous models by Diego Nehab\footnote{see: \cref{sec:RAVG}}, which applied deformations and warps to vector graphics on arbitrary surfaces but optimized the pipeline for dynamism. The rendering pipeline divides into a pre-processing component that builds a novel, the shortcut tree, and a rendering component that processes all samples and pixels in parallel. As a result, tree construction is efficient and parallel at the segment level, enabling dynamic vector graphics.
+\subsection{Massively Parallel Vector Graphics}
+Published in the ACM ToG and Proceedings of ACM SIGGRAPH Asia 2014, Ganacim et al. reached higher levels of parallelization in vector graphics rendering. This solution further builds on previous models by Diego Nehab\footnote{see: \cref{sec:RAVG}}, which applied deformations and warps to vector graphics on arbitrary surfaces but optimized the pipeline for dynamism. The rendering pipeline divides into a pre-processing component that builds a novel, the shortcut tree, and a rendering component that processes all samples and pixels in parallel\cite{Ganacim14}. As a result, tree construction is efficient and parallel at the segment level, enabling dynamic vector graphics.
 
 \widesvg
 % Path
@@ -127,16 +122,16 @@ Published in the ACM ToG and Proceedings of ACM SIGGRAPH Asia 2014, Ganacim et a
 % Attribution
 {\href{https://w3.impa.br/~diego/projects/GanEtAl14/index.html}{Massively-Parallel Vector Graphics by Ganacim et al., Fair Use}}\medskip
 
-\subsection{Efficient GPU Path Rendering Using Scanline Rasterization}\label{sec:scanline_vg}\cite{Li16}
-Published in the ACM ToG and presented in SIGGRAPH Asia 2016, Li et al. released a significant milestone in vector graphics rendering. The solution is parallel, optimized, and supports dynamism inherently. The methods presented parallelize over boundary fragments (pixels intersecting the path boundary), and non-boundary pixels process in bulk, similar to CPU scanline rasterizers. This novel scanline algorithm significantly saves on the number of winding number computations. To this day, it remains one of the fastest methods for rasterization and GPU efficiency. Moreover, it supports animated input and outperforms many state-of-the-art alternatives.
+\subsection{Efficient GPU Path Rendering Using Scanline Rasterization}\label{sec:scanline_vg}
+Published in the ACM ToG and presented in SIGGRAPH Asia 2016, Li et al. released a significant milestone in vector graphics rendering. The solution is parallel, optimized, and supports dynamism inherently. The methods presented parallelize over boundary fragments, pixels intersecting the path boundary, while non-boundary pixels process in bulk, similar to CPU scanline rasterizers\cite{Li16}. This novel scanline algorithm significantly saves on the number of winding number computations. To this day, it remains one of the fastest methods for rasterization and GPU efficiency. Moreover, it supports animated input and outperforms many state-of-the-art alternatives.
 
-\subsection{Bay Area Rust March 2017: GPU Rasterization}\cite{Walton18}
-Patrick Walton was given a feature panel in Air Mozilla's Bay Area Rust event in March 2017, where he discussed his project \textit{Pathfinder}\footnote{see also: \cref{sec:Pathfinder}}. During his presentation, he exposed the implementation in an easily accessed format. He noted \textit{Pathfinder} uses tessellation to split curved shape edges into small line fragments within an arbitrary tolerance (3 pixels) using tessellation shaders. In the fragment shader, \textit{Pathfinder} calculates the area defined by the bound tessellation fragments and stores the area relative to those around it in a novel way called \textit{delta coverage}. After computing the delta coverage, \textit{Pathfinder} sweeps every column in parallel to calculate the coverage in a prefix sum which translates to the winding fill rule for every pixel.
+\subsection{Bay Area Rust March 2017: GPU Rasterization}
+Patrick Walton was given a feature panel in Air Mozilla's Bay Area Rust event in March 2017, where he discussed his project \textit{Pathfinder}\footnote{see also: \cref{sec:Pathfinder}}. During his presentation, he exposed the implementation in an accessible presentation. He noted \textit{Pathfinder} uses tessellation to split curved shape edges into small line fragments within an arbitrary tolerance (3 pixels) using tessellation shaders. In the fragment shader, \textit{Pathfinder} calculates the area defined by the bound tessellation fragments and stores the area relative to those around it in a novel way called \textit{delta coverage}. After computing the delta coverage, \textit{Pathfinder} sweeps every column in parallel to calculate the coverage in a prefix sum which translates to the winding fill rule for every pixel\cite{Walton18}. With this approach, \textit{Pathfinder} is able to be more efficient with occlusion culling.
 
-\subsection{Sort-Middle Architecture}\cite{Levien20}
-Dr. Raph Levien's research blog defined a new architecture merged into his renderer ``\textit{piet-gpu}'', further mentioned in \cref{sec:piet-gpu}. As described in the blog post,
+\subsection{Sort-Middle Architecture}
+Dr. Raph Levien's research blog defined a new architecture merged into his renderer ``\textit{piet-gpu}'', further mentioned in \cref{sec:piet-gpu}. As described in the blog post\cite{Levien20},
 \begin{quote}
-\textit{The architecture calls for sorting in the middle of the pipeline, so that in the early stage of the pipeline, (2D) triangles can be processed in arbitrary order to maximally exploit parallelism, but the output (2D) render still correctly applies the triangles in order.}\cite{Levien20}
+\textit{The architecture calls for sorting in the middle of the pipeline, so that in the early stage of the pipeline, (2D) triangles can be processed in arbitrary order to maximally exploit parallelism, but the output (2D) render still correctly applies the triangles in order.}
 \end{quote}
 This research has helped \textit{piet-gpu} to be a modern, experimental solution to dynamic vector rendering with support for mass input and animation. The architecture explains that the motivation for this compute-centric pipeline is to maximize parallelism. Dr. Raph Levien accomplished this through a multi-stage compute-centric pipeline with a sorting procedure in the middle. The performance claims and results listed display \emph{signifcant} results for \textit{piet-gpu} on NVIDIA\copyright hardware in \cref{fig:sort-middle-results}, and work is still ongoing\footnote{see: \href{https://github.com/linebender/piet-gpu}{https://github.com/linebender/piet-gpu}}. Dr. Raph Levien's blogs\footnote{see: \href{https://raphlinus.github.io/}{https://raphlinus.github.io/}} have been insightful and reputable as a source of vector graphic field study and advancement in recent years.\medskip
 
