@@ -126,3 +126,5 @@ if ! shopt -oq posix; then
 fi
 . "$HOME/.cargo/env"
 
+#export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
+#export SOPS_AGE_RECIPIENTS="age1vyn7adkeklaztjhgcuh3sflwzlk6mcuy52ja0wr5kn3ghf5u8e2sa2esn4"
