@@ -7,6 +7,6 @@
  [📋 Résumé](https://spencer.imbleau.com/resume)\
 📧 Contact methods are available on my website.
 
-![Spencer's Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=simbleau&layout=compact&exclude_repo=simbleau,simbleau.github.io,power&langs_count=4&hide=tex,shell,html)
+I am notably involved in [linebender](https://linebender.org), [rust](https://rust-lang.org/), [bevy](https://bevy.org), and [trunk](https://trunkrs.dev/).
 
 </div>
