@@ -3,7 +3,7 @@
 **Spencer C. Imbleau** (he/him)
 
 [🏠 Website](https://spencer.imbleau.com) |
- [📝 Blog](https://simbleau.github.io/) |
+ [📝 Blog](https://nuzzles.github.io/) |
  [📋 Résumé](https://spencer.imbleau.com/resume)\
 📧 Contact methods are available on my website.
 
